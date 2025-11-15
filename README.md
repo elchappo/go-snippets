@@ -263,3 +263,55 @@ func (this *BrowserHistory) Forward(steps int) string {
 }
 
 ```
+### Number of Students Unable to Eat Lunch
+```Go
+func countStudents(students []int, sandwiches []int) int {
+    count := []int{0,0 }
+    for _, s := range students {
+        count[s]++
+    }
+
+    for _, sandwitch := range sandwiches {
+        if count[sandwitch] ==0 {
+            break
+        }
+        count[sandwitch]--
+    }
+    return count[0] + count[1]
+}
+```
+
+### Implement Stack Using Queues
+```Go
+type MyStack struct {
+    q []int
+}
+
+func Constructor() MyStack {
+    return MyStack{q: []int{}}
+}
+
+func (this *MyStack) Push(x int) {
+    this.q = append(this.q, x)
+    for i := 0; i < len(this.q)-1; i++ {
+        this.q = append(this.q, this.q[0])
+        this.q = this.q[1:]
+    }
+}
+
+func (this *MyStack) Pop() int {
+    top := this.q[0]
+    this.q = this.q[1:]
+    return top
+}
+
+func (this *MyStack) Top() int {
+    return this.q[0]
+}
+
+func (this *MyStack) Empty() bool {
+    return len(this.q) == 0
+}
+
+
+```
