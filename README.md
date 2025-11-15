@@ -1,6 +1,5 @@
 # go-snippets
 
-## Static Arrays
 ### Remove Duplicates From Sorted Array
 ```go
 func removeDuplicates(nums []int) int {
@@ -104,5 +103,22 @@ func (this *MinStack) Top() int {
 
 func (this *MinStack) GetMin() int {
     return this.min[len(this.min)-1]
+}
+```
+### Reverse Linked List
+https://neetcode.io/solutions/reverse-linked-list
+```go
+func reverseList(head *ListNode) *ListNode {
+    var prev *ListNode
+    current := head 
+
+    for current != nil {
+        next := current.Next
+        current.Next = prev 
+        prev = current 
+        current = next
+    } 
+
+    return prev
 }
 ```
