@@ -158,83 +158,65 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 ```
 ### Design Linked List
 ```Go
+package main
+
+type ListNode struct {
+    Val  int
+    Next *ListNode
+}
 
 type MyLinkedList struct {
-    Head *ListNode
+    head *ListNode
     size int
 }
 
-
 func Constructor() MyLinkedList {
     return MyLinkedList{
-        Head: &ListNode{},
+        head: &ListNode{Next: nil},
         size: 0,
     }
 }
 
+func (this *MyLinkedList) getPrev(index int) *ListNode {
+    cur := this.head
+    for i := 0; i < index; i++ {
+        cur = cur.Next
+    }
+    return cur
+}
 
 func (this *MyLinkedList) Get(index int) int {
     if index < 0 || index >= this.size {
         return -1
     }
-    cur := this.Head.Next
-    for i:=0; i < index; i++{
-        cur = cur.Next
-    }
-    return cur.Val
+    return this.getPrev(index).Next.Val
 }
 
-
-func (this *MyLinkedList) AddAtHead(val int)  {
+func (this *MyLinkedList) AddAtHead(val int) {
     this.AddAtIndex(0, val)
 }
 
-
-func (this *MyLinkedList) AddAtTail(val int)  {
+func (this *MyLinkedList) AddAtTail(val int) {
     this.AddAtIndex(this.size, val)
 }
 
-
-func (this *MyLinkedList) AddAtIndex(index int, val int)  {
-    if index < 0 || index > this.size{
+func (this *MyLinkedList) AddAtIndex(index int, val int) {
+    if index < 0 || index > this.size {
         return
     }
-    
-
-    prev := this.Head
-    for i := 0; i < index; i++ {
-        prev = prev.Next
-    }
-
-    newNode := &ListNode{Val: val, Next: prev.Next}
-    prev.Next = newNode
+    prev := this.getPrev(index)
+    node := &ListNode{Val: val, Next: prev.Next}
+    prev.Next = node
     this.size++
 }
 
-
-func (this *MyLinkedList) DeleteAtIndex(index int)  {
-    if index < 0 || index >= this.size{
+func (this *MyLinkedList) DeleteAtIndex(index int) {
+    if index < 0 || index >= this.size {
         return
     }
-    
-
-    prev := this.Head
-    for i := 0; i < index; i++ {
-        prev = prev.Next
-    }
-
+    prev := this.getPrev(index)
     prev.Next = prev.Next.Next
     this.size--
 }
 
-
-/**
- * Your MyLinkedList object will be instantiated and called as such:
- * obj := Constructor();
- * param_1 := obj.Get(index);
- * obj.AddAtHead(val);
- * obj.AddAtTail(val);
- * obj.AddAtIndex(index,val);
- * obj.DeleteAtIndex(index);
- */
 ```
