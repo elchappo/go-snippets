@@ -220,3 +220,46 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 }
 
 ```
+### Design Browser History
+```Go
+type BrowserHistory struct {
+    history[]string
+    index int
+}
+
+
+func Constructor(homepage string) BrowserHistory {
+    return BrowserHistory {
+        history: []string{homepage},
+        index: 0,
+    }
+}
+
+
+func (this *BrowserHistory) Visit(url string)  {
+    this.history = this.history[:this.index+1]
+    this.history = append(this.history, url)
+    this.index++
+}
+
+
+func (this *BrowserHistory) Back(steps int) string {
+    if this.index - steps < 0 {
+        this.index = 0 
+    }else{
+        this.index -= steps
+    }
+    return this.history[this.index]
+}
+
+
+func (this *BrowserHistory) Forward(steps int) string {
+    if this.index + steps >= len(this.history) {
+        this.index = len(this.history)-1
+    } else{
+        this.index += steps
+    }
+    return this.history[this.index]
+}
+
+```
