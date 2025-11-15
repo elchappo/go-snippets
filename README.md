@@ -105,20 +105,48 @@ func (this *MinStack) GetMin() int {
     return this.min[len(this.min)-1]
 }
 ```
-### Reverse Linked List
+### Reverse Linked List !
 https://neetcode.io/solutions/reverse-linked-list
 ```go
 func reverseList(head *ListNode) *ListNode {
-    var prev *ListNode
-    current := head 
+    if head == nil {
+        return nil
+    }
 
-    for current != nil {
-        next := current.Next
-        current.Next = prev 
-        prev = current 
-        current = next
-    } 
+    newHead := head
+    if head.Next != nil {
+        newHead = reverseList(head.Next)
+        head.Next.Next = head
+    }
+    head.Next = nil
 
-    return prev
+    return newHead
 }
+```
+### Merge Two Sorted Linked Lists
+```go
+func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
+    result := &ListNode{}
+    tail := result
+
+    for list1 != nil && list2 != nil {
+        if list1.Val < list2.Val {
+            tail.Next = list1
+            list1 = list1.Next 
+        } else {
+            tail.Next = list2
+            list2 = list2.Next
+        }
+        tail = tail.Next
+    }
+
+    if list1 != nil {
+        tail.Next = list1
+    } else {
+        tail.Next = list2
+    }
+
+    return result.Next
+}
+
 ```
