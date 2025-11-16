@@ -347,10 +347,9 @@ func climbStairs(n int) int {
 ```Go
 func InsertionSort(arr []int) []int {
     for i := 1; i < len(arr); i++ {
-        j := i - 1
-        next := arr[j+1]
-        for j >= 0 && next < arr[j] {
-            arr[j+1], arr[j] = arr[j], arr[j+1]
+        j := i
+        for j > 0 && arr[j] < arr[j-1] {
+            arr[j], arr[j-1] = arr[j-1], arr[j]
             j--
         }
     }
@@ -383,4 +382,8 @@ func insertionSort(pairs []Pair) [][]Pair {
 
 	return result
 }
+```
+### Merge Sort
+```Go
+
 ```
