@@ -517,7 +517,7 @@ func QuickSort(arr []int, start, end int) {
 }
 ```
 
-### Bucket Sort - O(n)
+### Bucket Sort - O(n) - Unstable
 
 ```Go
 func bucketSort(arr []int) []int {
