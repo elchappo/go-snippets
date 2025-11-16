@@ -458,7 +458,7 @@ func mergeKLists(lists []*ListNode) *ListNode {
 }
 ```
 
-### Quick Sort - O(nlog n) - Unstable
+### Quick Sort - O(nlog n) wost case O(n2) - Unstable
 
 ![Quick Sort](https://upload.wikimedia.org/wikipedia/commons/f/fe/Quicksort.gif)
 
@@ -491,5 +491,28 @@ func quickSort(arr []int, low, high int) []int {
 
 func quickSortStart(arr []int) []int {
 	return quickSort(arr, 0, len(arr)-1)
+}
+```
+```Go
+func QuickSort(arr []int, start, end int) {
+    if start >= end { // base case: subarray has 0 or 1 element
+        return
+    }
+
+    pivotValue := arr[end]      // pivot element
+    smallerIndex := start       // position to swap smaller elements
+
+    for currentIndex := start; currentIndex < end; currentIndex++ {
+        if arr[currentIndex] < pivotValue {
+            arr[smallerIndex], arr[currentIndex] = arr[currentIndex], arr[smallerIndex]
+            smallerIndex++
+        }
+    }
+
+    // place pivot in correct sorted position
+    arr[smallerIndex], arr[end] = arr[end], arr[smallerIndex]
+
+    QuickSort(arr, start, smallerIndex-1)  // sort left partition
+    QuickSort(arr, smallerIndex+1, end)    // sort right partition
 }
 ```
