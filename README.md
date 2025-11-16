@@ -342,3 +342,45 @@ func climbStairs(n int) int {
     return dfs(0)
 }
 ```
+
+### Insertion Sort - stable sorting O(n2)
+```Go
+func InsertionSort(arr []int) []int {
+    for i := 1; i < len(arr); i++ {
+        j := i - 1
+        next := arr[j+1]
+        for j >= 0 && next < arr[j] {
+            arr[j+1], arr[j] = arr[j], arr[j+1]
+            j--
+        }
+    }
+    return arr
+}
+```
+```Go
+func insertionSort(pairs []Pair) [][]Pair {
+	// Result holds snapshots after each insertion
+	result := make([][]Pair, 0, len(pairs))
+
+	// Work on a copy so original isn't modified
+	arr := make([]Pair, len(pairs))
+	copy(arr, pairs)
+
+	for i := 0; i < len(arr); i++ {
+		// Perform insertion step
+		j := i
+		for j > 0 && arr[j-1].Key > arr[j].Key {
+			// Swap (stable because we only swap when strictly greater)
+			arr[j], arr[j-1] = arr[j-1], arr[j]
+			j--
+		}
+
+		// Record snapshot (copy slice to avoid later overwrite)
+		snapshot := make([]Pair, len(arr))
+		copy(snapshot, arr)
+		result = append(result, snapshot)
+	}
+
+	return result
+}
+```
