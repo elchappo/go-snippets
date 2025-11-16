@@ -540,7 +540,7 @@ func bucketSort(arr []int) []int {
     return arr
 }
 ```
-### Binary search - Middle index (log n)
+### Binary Search - Middle index (log n)
 ```Go
 func binarySearch(arr []int, target int) int {
 	L, R := 0, len(arr)-1
