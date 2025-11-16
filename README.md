@@ -344,6 +344,9 @@ func climbStairs(n int) int {
 ```
 
 ### Insertion Sort - stable sorting O(n2)
+
+![Insertion Sort](https://blog.boot.dev/img/800/insertionsort.gif)
+
 ```Go
 func InsertionSort(arr []int) []int {
     for i := 1; i < len(arr); i++ {
@@ -383,7 +386,73 @@ func insertionSort(pairs []Pair) [][]Pair {
 	return result
 }
 ```
-### Merge Sort
-```Go
+### Merge Sort - Divide & Conquer O(nlog n)
 
+![Merge Sort](https://blog.boot.dev/img/800/merge_sort_gif.gif)
+
+```Go
+package main
+
+func mergeSort(items []int) []int {
+    if len(items) < 2 {
+        return items
+    }
+    first := mergeSort(items[:len(items)/2])
+    second := mergeSort(items[len(items)/2:])
+    return merge(first, second)
+}
+
+func merge(a []int, b []int) []int {
+    final := []int{}
+    i := 0
+    j := 0
+    for i < len(a) && j < len(b) {
+        if a[i] < b[j] {
+            final = append(final, a[i])
+            i++
+        } else {
+            final = append(final, b[j])
+            j++
+        }
+    }
+    for ; i < len(a); i++ {
+        final = append(final, a[i])
+    }
+    for ; j < len(b); j++ {
+        final = append(final, b[j])
+    }
+    return final
+}
+```
+```Go
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func mergeKLists(lists []*ListNode) *ListNode {
+    nodes := make([]int, 0)
+
+    for _, list := range lists {
+        curr := list
+        for curr != nil {
+            nodes = append(nodes, curr.Val)
+            curr = curr.Next
+        }
+    }
+
+    sort.Ints(nodes)
+
+    dummy := &ListNode{Val: 0}
+    curr := dummy
+
+    for _, val := range nodes {
+        curr.Next = &ListNode{Val: val}
+        curr = curr.Next
+    }
+
+    return dummy.Next
+}
 ```
