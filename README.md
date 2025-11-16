@@ -314,7 +314,7 @@ func (this *MyStack) Empty() bool {
 }
 ```
 
-### Climbing Stairs - Fibonaci 
+### Climbing Stairs - Fibonaci - DFS - Depth First Search
 ```GO
 func climbStairs(n int) int {
     if n <= 2 {
