@@ -312,6 +312,33 @@ func (this *MyStack) Top() int {
 func (this *MyStack) Empty() bool {
     return len(this.q) == 0
 }
+```
 
-
+### Climbing Stairs - Fibonaci 
+```GO
+func climbStairs(n int) int {
+    if n <= 2 {
+        return n
+    }
+    first, second := 1, 2
+    for i := 3; i <= n; i++ {
+        first, second = second, first+second
+    }
+    return second
+}
+```
+```Go
+func climbStairs(n int) int {
+    var dfs func(i int) int
+    dfs = func(i int) int {
+        if i >= n {
+            if i == n {
+                return 1
+            }
+            return 0
+        }
+        return dfs(i + 1) + dfs(i + 2)
+    }
+    return dfs(0)
+}
 ```
