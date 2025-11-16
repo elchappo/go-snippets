@@ -343,7 +343,7 @@ func climbStairs(n int) int {
 }
 ```
 
-### Insertion Sort - stable sorting O(n2)
+### Insertion Sort - O(n2) - Stable
 
 ![Insertion Sort](https://blog.boot.dev/img/800/insertionsort.gif)
 
@@ -387,7 +387,7 @@ func insertionSort(pairs []Pair) [][]Pair {
 }
 ```
 
-### Merge Sort - O()
+### Merge Sort - O(nlogn) - Stable
 
 ![Merge Sort](https://blog.boot.dev/img/800/merge_sort_gif.gif)
 
@@ -458,7 +458,7 @@ func mergeKLists(lists []*ListNode) *ListNode {
 }
 ```
 
-### Quick Sort - O(log n)
+### Quick Sort - O(nlog n) - Unstable
 
 ![Quick Sort](https://upload.wikimedia.org/wikipedia/commons/f/fe/Quicksort.gif)
 
