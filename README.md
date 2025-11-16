@@ -386,7 +386,7 @@ func insertionSort(pairs []Pair) [][]Pair {
 	return result
 }
 ```
-### Merge Sort - Divide & Conquer O(nlog n)
+
 
 ![Merge Sort](https://blog.boot.dev/img/800/merge_sort_gif.gif)
 
@@ -455,4 +455,12 @@ func mergeKLists(lists []*ListNode) *ListNode {
 
     return dummy.Next
 }
+```
+
+### Quick Sort
+
+![Quick Sort](https://upload.wikimedia.org/wikipedia/commons/f/fe/Quicksort.gif)
+
+```Go
+
 ```
