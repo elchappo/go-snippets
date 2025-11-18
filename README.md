@@ -630,7 +630,7 @@ func minEatingSpeed(piles []int, h int) int {
    return speed
 }
 ```
-### Binary Search Tree - BST - O(logn) for balance tree
+### Binary Search Tree - BST - O(logn) for balance tree - Insert and remove in O(logn) time
 ```Go
 package main
 
