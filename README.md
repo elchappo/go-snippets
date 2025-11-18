@@ -541,6 +541,9 @@ func bucketSort(arr []int) []int {
 }
 ```
 ### Binary Search - Middle index (log n)
+
+https://www.geeksforgeeks.org/dsa/binary-search/
+
 ```Go
 func binarySearch(arr []int, target int) int {
 	L, R := 0, len(arr)-1
