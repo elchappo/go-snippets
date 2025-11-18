@@ -559,3 +559,36 @@ func binarySearch(arr []int, target int) int {
 	return -1
 }
 ```
+```Go
+func minEatingSpeed(piles []int, h int) int {
+    canFinish := func(k int) bool {
+        hours := 0
+        for _, pile := range piles {
+            hours += (pile + k - 1) / k // ceiling division
+            if hours > h {
+                return false
+            }
+        }
+        return true
+    }
+
+    low, high := 1, 0
+    for _, pile := range piles {
+        if pile > high {
+            high = pile
+        }
+    }
+
+    // Binary search for minimum k
+    for low < high {
+        mid := low + (high-low)/2
+        if canFinish(mid) {
+            high = mid
+        } else {
+            low = mid + 1
+        }
+    }
+
+    return low
+}
+```
