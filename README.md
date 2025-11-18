@@ -741,3 +741,96 @@ func deleteNode(root *TreeNode, key int) *TreeNode {
 }
 
 ```
+### Binary Tree Inorder Traversal
+```Go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func traverse(node *TreeNode, result *[]int) {
+    if node != nil {
+        traverse(node.Left,result)
+        *result = append(*result, node.Val)
+        traverse(node.Right,result)
+    }
+}
+
+func inorderTraversal(root *TreeNode) []int {
+    result := []int{}
+    traverse(root, &result)
+    return result
+}
+```
+### Kth Smallest Integer in BST
+```Go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func kthSmallest(root *TreeNode, k int) int {
+    stack := []*TreeNode{}
+    current := root
+
+    for current != nil || len(stack) > 0 {
+        for current != nil {
+            stack = append(stack, current)
+            current = current.Left
+        }
+        
+        current = stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
+
+        k-- 
+        if k == 0 {
+            return current.Val
+        }
+
+        current = current.Right
+    } 
+    return -1
+}
+
+```
+### Construct Binary Tree from Preorder and Inorder Traversal
+```Go
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func buildTree(preorder []int, inorder []int) *TreeNode {
+    if len(preorder) == 0 || len(inorder) == 0 {
+        return nil
+    }
+
+    rootVal := preorder[0]
+    root := &TreeNode{Val: rootVal}
+
+    var rootIndex int 
+    for i, val := range inorder {
+        if val == rootVal {
+            rootIndex = i
+            break
+        }
+    }
+
+    root.Left = buildTree(preorder[1:rootIndex+1], inorder[:rootIndex])
+    root.Right = buildTree(preorder[rootIndex+1:], inorder[rootIndex+1:])
+    return root
+}
+
+```
