@@ -664,6 +664,7 @@ func (s *Search) Search(root *TreeNode, target int) bool {
     }
 }
 ```
+### Search in a Binary Search Tree
 ```Go
 /**
  * Definition for a binary tree node.
