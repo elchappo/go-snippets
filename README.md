@@ -630,3 +630,37 @@ func minEatingSpeed(piles []int, h int) int {
    return speed
 }
 ```
+### Binary Search Tree - BST
+```Go
+package main
+
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
+
+func NewTreeNode(val int) *TreeNode {
+    return &TreeNode{
+        Val: val,
+        Left:  nil,
+        Right: nil,
+    }
+}
+
+type Search struct {}
+
+func (s *Search) Search(root *TreeNode, target int) bool {
+    if root == nil {
+        return false
+    }
+
+    if target > root.Val {
+        return s.Search(root.Right, target)
+    } else if target < root.Val {
+        return s.Search(root.Left, target)
+    } else {
+        return true
+    }
+}
+```
