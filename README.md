@@ -1,5 +1,61 @@
 # go-snippets
 
+### Main 
+```Go
+package main
+
+type Test struct {
+	Name     string
+	Input    int
+	Expected int
+}
+
+func main() {
+
+	tests := []Test{
+		{Name: "Add 2+3", Input: 5, Expected: 5},
+		{Name: "Add 10+20", Input: 30, Expected: 30},
+		{Name: "Multiply 3*4", Input: 12, Expected: 12},
+		{Name: "Multiply 5*6", Input: 30, Expected: 30},
+	}
+
+	for i, test := range tests {
+
+	}
+}
+
+```
+### Tests
+```Go
+package main
+
+import "testing"
+
+// TestAdd tests the Add function
+func TestAdd(t *testing.T) {
+	tests := []struct {
+		name     string
+		a        int
+		b        int
+		expected int
+	}{
+		{"Add positive numbers", 2, 3, 5},
+		{"Add with zero", 10, 0, 10},
+		{"Add negative numbers", -5, -3, -8},
+		{"Add positive and negative", 10, -5, 5},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := Add(tt.a, tt.b)
+			if result != tt.expected {
+				t.Errorf("Add(%d, %d) = %d; expected %d", tt.a, tt.b, result, tt.expected)
+			}
+		})
+	}
+}
+```
+
 ### Remove Duplicates From Sorted Array
 ```go
 func removeDuplicates(nums []int) int {
