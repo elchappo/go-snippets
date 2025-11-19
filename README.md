@@ -942,5 +942,131 @@ func levelOrder(root *TreeNode) [][]int {
 ```
 ### Design Binary Search Tree
 ```Go
+package main
 
+import "fmt"
+
+type TreeNode struct {
+	Key   int
+	Value int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+type TreeMap struct {
+	Root *TreeNode
+}
+
+func NewTreeMap() *TreeMap {
+	return &TreeMap{}
+}
+
+func (t *TreeMap) Insert(key, val int) {
+	t.Root = t.insert(t.Root, key, val)
+}
+
+func (t *TreeMap) insert(node *TreeNode, key, val int) *TreeNode {
+	if node == nil {
+		return &TreeNode{Key: key, Value: val}
+	}
+	if key < node.Key {
+		node.Left = t.insert(node.Left, key, val)
+	} else if key > node.Key {
+		node.Right = t.insert(node.Right, key, val)
+	} else {
+		node.Value = val
+	}
+	return node
+}
+
+func (t *TreeMap) Get(key int) int {
+	node := t.get(t.Root, key)
+	if node == nil {
+		return -1
+	}
+	return node.Value
+}
+
+func (t *TreeMap) get(node *TreeNode, key int) *TreeNode {
+	if node == nil {
+		return nil
+	}
+	if key < node.Key {
+		return t.get(node.Left, key)
+	} else if key > node.Key {
+		return t.get(node.Right, key)
+	}
+	return node
+}
+
+func (t *TreeMap) GetMin() int {
+	node := t.getMin(t.Root)
+	if node == nil {
+		return -1
+	}
+	return node.Value
+}
+
+func (t *TreeMap) getMin(node *TreeNode) *TreeNode {
+	if node.Left == nil {
+		return node
+	}
+	return t.getMin(node.Left)
+}
+
+func (t *TreeMap) GetMax() int {
+	node := t.getMax(t.Root)
+	if node == nil {
+		return -1
+	}
+	return node.Value
+}
+
+func (t *TreeMap) getMax(node *TreeNode) *TreeNode {
+	if node.Right == nil {
+		return node
+	}
+	return t.getMax(node.Right)
+}
+
+func (t *TreeMap) Remove(key int) {
+	t.Root = t.remove(t.Root, key)
+}
+
+func (t *TreeMap) remove(node *TreeNode, key int) *TreeNode {
+	if node == nil {
+		return nil
+	}
+	if key < node.Key {
+		node.Left = t.remove(node.Left, key)
+	} else if key > node.Key {
+		node.Right = t.remove(node.Right, key)
+	} else {
+		if node.Left == nil {
+			return node.Right
+		}
+		if node.Right == nil {
+			return node.Left
+		}
+		temp := t.getMin(node.Right)
+		node.Key = temp.Key
+		node.Value = temp.Value
+		node.Right = t.remove(node.Right, temp.Key)
+	}
+	return node
+}
+
+func (t *TreeMap) GetInorderKeys() []int {
+	return t.getInorderKeys(t.Root)
+}
+
+func (t *TreeMap) getInorderKeys(node *TreeNode) []int {
+	if node == nil {
+		return []int{}
+	}
+	keys := t.getInorderKeys(node.Left)
+	keys = append(keys, node.Key)
+	keys = append(keys, t.getInorderKeys(node.Right)...)
+	return keys
+}
 ```
