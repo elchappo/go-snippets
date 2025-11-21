@@ -554,23 +554,79 @@
             content.split(/^### /m).slice(1).forEach(section => {
                 const lines = section.split('\n');
                 const title = lines[0].trim();
-                if (!title || title.includes('Main') || title.includes('Tests')) return;
+                if (!title || title.includes('Main') || title.includes('Tests') || title.includes('Comparison Table')) return;
 
+                // Extract description
+                let description = '';
+                const descMatch = section.match(/\*\*Description\*\*:\s*(.+?)(?=\n\n|\*\*Time)/s);
+                if (descMatch) {
+                    description = descMatch[1].trim();
+                } else {
+                    description = `Implementation of ${title}`;
+                }
+
+                // Extract time complexity
+                let timeComplexity = 'O(n)';
+                const timeMatch = section.match(/\*\*Time Complexity\*\*:\s*(.+?)(?=\n)/);
+                if (timeMatch) {
+                    timeComplexity = timeMatch[1].trim();
+                }
+
+                // Extract space complexity
+                let spaceComplexity = 'O(1)';
+                const spaceMatch = section.match(/\*\*Space Complexity\*\*:\s*(.+?)(?=\n)/);
+                if (spaceMatch) {
+                    spaceComplexity = spaceMatch[1].trim();
+                }
+
+                // Extract pros
+                let pros = [];
+                const prosMatch = section.match(/\*\*Pros\*\*:\n((?:- .+\n?)+)/);
+                if (prosMatch) {
+                    pros = prosMatch[1].split('\n').filter(p => p.trim()).map(p => p.replace(/^- /, '').trim());
+                }
+
+                // Extract cons
+                let cons = [];
+                const consMatch = section.match(/\*\*Cons\*\*:\n((?:- .+\n?)+)/);
+                if (consMatch) {
+                    cons = consMatch[1].split('\n').filter(c => c.trim()).map(c => c.replace(/^- /, '').trim());
+                }
+
+                // Extract usage
+                let usage = '';
+                const usageMatch = section.match(/\*\*Usage\*\*:\s*(.+?)(?=\n\n|```)/s);
+                if (usageMatch) {
+                    usage = usageMatch[1].trim();
+                }
+
+                // Extract code
                 let code = '';
                 const codeMatch = section.match(/```go\n([\s\S]*?)```/);
                 if (codeMatch) code = codeMatch[1].trim();
 
+                // Determine category
+                let category = 'all';
+                const sectionHeader = content.substring(0, content.indexOf('### ' + title));
+                if (sectionHeader.includes('## Array & String')) category = 'array';
+                else if (sectionHeader.includes('## Stack & Queue')) category = 'stack';
+                else if (sectionHeader.includes('## Linked Lists')) category = 'linked';
+                else if (sectionHeader.includes('## Sorting')) category = 'sorting';
+                else if (sectionHeader.includes('## Search')) category = 'search';
+                else if (sectionHeader.includes('## Binary Search Trees') || sectionHeader.includes('## Tree')) category = 'tree';
+                else if (sectionHeader.includes('## Dynamic')) category = 'dp';
+
                 if (code) {
                     algos.push({
                         title,
-                        description: `Implementation of ${title}`,
-                        timeComplexity: 'O(n)',
-                        spaceComplexity: 'O(1)',
-                        pros: [],
-                        cons: [],
-                        usage: '',
+                        description,
+                        timeComplexity,
+                        spaceComplexity,
+                        pros,
+                        cons,
+                        usage,
                         code,
-                        category: 'all'
+                        category
                     });
                 }
             });
@@ -616,10 +672,62 @@
             const algo = filteredAlgorithms[currentIndex];
             const isKnown = knownCards.has(algo.title);
 
+            // Build complexity section
+            const complexityHTML = `
+                <div class="complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time Complexity</div>
+                        <div class="complexity-value">${algo.timeComplexity}</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space Complexity</div>
+                        <div class="complexity-value">${algo.spaceComplexity}</div>
+                    </div>
+                </div>
+            `;
+
+            // Build pros/cons section
+            let prosConsHTML = '';
+            if (algo.pros.length > 0 || algo.cons.length > 0) {
+                prosConsHTML = '<div class="pros-cons">';
+                if (algo.pros.length > 0) {
+                    prosConsHTML += `
+                        <div class="pros">
+                            <h4>Pros</h4>
+                            <ul>
+                                ${algo.pros.map(pro => `<li>${pro}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                if (algo.cons.length > 0) {
+                    prosConsHTML += `
+                        <div class="cons">
+                            <h4>Cons</h4>
+                            <ul>
+                                ${algo.cons.map(con => `<li>${con}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                prosConsHTML += '</div>';
+            }
+
+            // Build usage section
+            const usageHTML = algo.usage ? `
+                <div class="usage">
+                    <div class="usage-label">When to Use</div>
+                    <div class="usage-text">${algo.usage}</div>
+                </div>
+            ` : '';
+
             wrapper.innerHTML = `
                 <div class="card">
                     <div class="card-title">${algo.title}</div>
                     <div class="card-description">${algo.description}</div>
+                    ${complexityHTML}
+                    ${prosConsHTML}
+                    ${usageHTML}
                     <div class="code-section">
                         <div class="code-header">
                             <span class="code-label">Go Implementation</span>

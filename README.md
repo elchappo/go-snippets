@@ -819,22 +819,63 @@ func bucketSort(arr []int) []int {
 
 ### Binary Search
 
-**Description**: Efficiently searches sorted array by repeatedly dividing search interval in half.
+**Description**: Efficiently searches a sorted array by repeatedly dividing the search interval in half. At each step, it compares the target value with the middle element and eliminates half of the remaining elements based on the comparison. This divide-and-conquer approach makes it one of the most efficient search algorithms for sorted data.
 
-**Time Complexity**: O(log n)  
-**Space Complexity**: O(1)
+**Time Complexity**: 
+- **Best Case**: O(1) - Target is at the middle position
+- **Average/Worst Case**: O(log n) - Must divide search space repeatedly
+- **Where n** is the number of elements in the array
+
+**Space Complexity**: 
+- **Iterative**: O(1) - Only uses a few variables
+- **Recursive**: O(log n) - Due to call stack depth
+
+**Big O Notation Explained**:
+- **O(log n)**: Each comparison eliminates half the search space
+- **Example**: Array of 1,000,000 elements requires only ~20 comparisons (log₂ 1,000,000 ≈ 20)
+- **Logarithmic growth**: Doubling array size adds only one more comparison
+- **Why log n?**: Search space halves each iteration: n → n/2 → n/4 → ... → 1
+
+**When to Use Binary Search**:
+✅ **Best suited for:**
+- Searching in large sorted arrays (1000+ elements)
+- Finding insertion points in sorted data
+- Implementing autocomplete/search suggestions
+- Database index lookups
+- Finding boundaries (first/last occurrence of value)
+- Optimization problems with monotonic functions
+- When you need guaranteed O(log n) search time
+
+❌ **Not ideal for:**
+- Unsorted data (sorting first takes O(n log n), negating benefits)
+- Small arrays (<50 elements, linear search is simpler and often faster)
+- Linked lists (no random access, can't efficiently find middle)
+- Frequently changing data (maintaining sorted order is expensive)
+- When you need to find all occurrences (still O(n) in worst case)
+
+**Comparison with Alternatives**:
+- **vs Linear Search**: O(log n) vs O(n) - 1000x faster for million elements
+- **vs Hash Table**: Binary search maintains order, hash table doesn't; hash is O(1) average but no range queries
+- **vs BST Search**: Array binary search has better cache locality, BST allows O(log n) insertions
+- **vs Interpolation Search**: Binary search is O(log n) guaranteed, interpolation is O(log log n) average but O(n) worst case
 
 **Pros**:
-- Very fast for large datasets
-- Simple implementation
-- Minimal memory usage
+- Extremely fast for large sorted datasets
+- Simple iterative implementation
+- Minimal memory usage (O(1) space)
+- Predictable performance (always O(log n))
+- Cache-friendly (array-based, good locality)
+- No preprocessing needed (if already sorted)
 
 **Cons**:
-- Requires sorted array
-- Not suitable for unsorted data
-- Random access required (not good for linked lists)
+- Requires sorted array (O(n log n) to sort first)
+- Not suitable for unsorted or frequently changing data
+- Random access required (not efficient for linked lists)
+- Overkill for small datasets
+- Can't efficiently handle duplicates (finding all occurrences)
+- Integer overflow risk with (L + R) / 2 (use L + (R - L) / 2)
 
-**Usage**: Searching in sorted arrays, finding insertion points, optimization problems.
+**Usage**: Searching in sorted arrays, finding insertion points, optimization problems, implementing lower_bound/upper_bound, finding peak elements, rotated array searches.
 
 [GeeksforGeeks Reference](https://www.geeksforgeeks.org/dsa/binary-search/)
 
@@ -950,21 +991,58 @@ func NewTreeNode(val int) *TreeNode {
 
 ### BST Search
 
-**Description**: Searches for a value in a binary search tree using BST property.
+**Description**: Searches for a value in a binary search tree by leveraging the BST property where left subtree contains smaller values and right subtree contains larger values. The algorithm recursively navigates left or right based on value comparison, eliminating half of the remaining nodes at each step.
 
-**Time Complexity**: O(log n) for balanced tree, O(n) worst case  
-**Space Complexity**: O(log n) for recursion stack
+**Time Complexity**: 
+- **Best/Average Case**: O(log n) - For balanced trees, height is logarithmic
+- **Worst Case**: O(n) - For completely unbalanced trees (essentially a linked list)
+- **Where n** is the number of nodes in the tree
+
+**Space Complexity**: 
+- **Recursive**: O(h) where h is tree height - Due to call stack
+- **Iterative**: O(1) - No extra space needed
+
+**Big O Notation Explained**:
+- **O(log n)**: Each comparison eliminates half the search space (like binary search)
+- **O(n)**: In worst case (skewed tree), must traverse all nodes linearly
+- **Height matters**: Balanced tree height = log n, skewed tree height = n
+
+**When to Use BST Search**:
+✅ **Best suited for:**
+- Searching in sorted/ordered data that changes frequently (insertions/deletions)
+- When you need O(log n) average search time without array reallocation
+- Dictionary/map implementations where keys need ordering
+- Range queries (find all values between x and y)
+- Finding min/max values efficiently
+- Maintaining sorted data with dynamic updates
+
+❌ **Not ideal for:**
+- Static sorted data (use binary search on array instead - better cache locality)
+- Unbalanced trees (consider self-balancing trees like AVL or Red-Black)
+- Small datasets (overhead not worth it, use simple array)
+- When you don't need ordering (use hash table for O(1) average lookup)
+
+**Comparison with Alternatives**:
+- **vs Array Binary Search**: BST allows O(log n) insertion/deletion, array requires O(n)
+- **vs Hash Table**: BST maintains order and supports range queries, hash table doesn't
+- **vs Linear Search**: BST is O(log n) vs O(n), but requires maintaining tree structure
+- **vs Balanced BST (AVL/Red-Black)**: Standard BST can degrade to O(n), balanced trees guarantee O(log n)
 
 **Pros**:
-- Efficient for balanced trees
+- Efficient O(log n) search for balanced trees
 - Simple recursive implementation
-- Leverages BST property
+- Leverages BST ordering property
+- No extra space needed for iterative version
+- Naturally supports range queries and ordered traversal
 
 **Cons**:
-- Degrades to O(n) for unbalanced trees
-- Recursion overhead
+- Performance degrades to O(n) for unbalanced trees
+- Recursion overhead and stack space usage
+- Requires maintaining BST property during insertions/deletions
+- Not cache-friendly compared to arrays
+- Slower than hash tables for exact-match lookups
 
-**Usage**: Finding elements in BST, validating BST structure.
+**Usage**: Finding elements in BST, validating BST structure, implementing ordered maps/sets, range queries, finding successor/predecessor nodes.
 
 ```go
 type Search struct{}
