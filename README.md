@@ -1,5 +1,7 @@
 # Go Algorithms & Data Structures Reference
 
+🎴 **[View Interactive Flashcards](https://elchappo.github.io/go-snippets/)** - Study these algorithms with an interactive flashcard viewer!
+
 A comprehensive collection of common algorithms and data structures implemented in Go, with complexity analysis, pros/cons, and usage scenarios.
 
 ## Table of Contents

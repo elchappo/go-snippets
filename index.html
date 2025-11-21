@@ -377,6 +377,56 @@
             opacity: 0.8;
         }
 
+        .card-selector {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-selector-label {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 0.9em;
+        }
+
+        .card-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
+        }
+
+        .card-number-btn {
+            padding: 8px;
+            background: white;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .card-number-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-number-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: white;
+        }
+
+        .card-number-btn.known {
+            background: #28a745;
+            color: white;
+        }
+
         .loading {
             text-align: center;
             color: white;
@@ -453,6 +503,10 @@
             <button class="reset-btn" onclick="resetProgress()">Reset Progress</button>
         </div>
         <div class="progress-info" id="progress-info">Loading...</div>
+        <div class="card-selector" id="card-selector" style="display: none;">
+            <span class="card-selector-label">Jump to Card:</span>
+            <div class="card-selector-grid" id="card-selector-grid"></div>
+        </div>
         <div id="card-wrapper" class="card-wrapper">
             <div class="loading">Loading algorithms from README.md...</div>
         </div>
@@ -579,13 +633,14 @@
                             <label for="known-check">Mark as Known</label>
                         </div>
                         <div class="navigation">
-                            <button class="nav-btn" onclick="previousCard()" ${currentIndex === 0 ? 'disabled' : ''}>← Previous</button>
-                            <button class="nav-btn" onclick="nextCard()" ${currentIndex >= filteredAlgorithms.length - 1 ? 'disabled' : ''}>Next →</button>
+                            <button class="nav-btn" onclick="previousCard()">← Previous</button>
+                            <button class="nav-btn" onclick="nextCard()">Next →</button>
                         </div>
                     </div>
                 </div>
             `;
             updateProgress();
+            renderCardSelector();
         }
 
         function toggleKnown() {
@@ -603,15 +658,60 @@
         function previousCard() {
             if (currentIndex > 0) {
                 currentIndex--;
-                renderCurrentCard();
+            } else {
+                // Loop to the end
+                currentIndex = filteredAlgorithms.length - 1;
             }
+            renderCurrentCard();
+            updateCardSelector();
         }
 
         function nextCard() {
             if (currentIndex < filteredAlgorithms.length - 1) {
                 currentIndex++;
-                renderCurrentCard();
+            } else {
+                // Loop back to the start
+                currentIndex = 0;
             }
+            renderCurrentCard();
+            updateCardSelector();
+        }
+
+        function jumpToCard(index) {
+            currentIndex = index;
+            renderCurrentCard();
+            updateCardSelector();
+        }
+
+        function renderCardSelector() {
+            const selector = document.getElementById('card-selector');
+            const grid = document.getElementById('card-selector-grid');
+
+            if (filteredAlgorithms.length === 0) {
+                selector.style.display = 'none';
+                return;
+            }
+
+            selector.style.display = 'block';
+            grid.innerHTML = filteredAlgorithms.map((algo, index) => {
+                const isKnown = knownCards.has(algo.title);
+                const isActive = index === currentIndex;
+                const classes = ['card-number-btn'];
+                if (isActive) classes.push('active');
+                if (isKnown) classes.push('known');
+
+                return `<button class="${classes.join(' ')}" onclick="jumpToCard(${index})" title="${algo.title}">${index + 1}</button>`;
+            }).join('');
+        }
+
+        function updateCardSelector() {
+            const buttons = document.querySelectorAll('.card-number-btn');
+            buttons.forEach((btn, index) => {
+                btn.classList.remove('active');
+                if (index === currentIndex) {
+                    btn.classList.add('active');
+                }
+            });
         }
 
         function printCode() {
