@@ -1533,13 +1533,43 @@ func climbStairs(n int) int {
 
 ---
 
-**Backtracking**:
+**Subsets**:
 ```go
 
----
+func subsets(nums []int) [][]int {
+
+    var result [][]int
+
+    var temp []int
+    
+    generateSubset(nums, 0, temp, &result)
+
+    return result
+}
+
+func generateSubset(nums []int, index int, current []int, result *[][]int){
+
+    if index == len(nums) {
+        subset := make([]int, len(current))
+        copy(subset, current)
+        *result = append(*result, subset)
+        return
+    }
+
+    generateSubset(nums, index+1, current, result)
+
+    current = append(current, nums[index])
+
+    generateSubset(nums, index+1, current, result)
+
+    current = current[:len(current)-1]
 
 
-**Combination Sum**
+}
+```
+
+
+**Combination Sum**:
 ```go
 func combinationSum(nums []int, target int) [][]int {
     var result [][]int
@@ -1568,6 +1598,7 @@ func backtrack(nums []int, target int, index int, current []int, result *[][]int
     }
 
 }
+```
 
 ---
 
