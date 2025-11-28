@@ -1526,12 +1526,27 @@ func climbStairs(n int) int {
 }
 ```
 
+
+
+
 **Comparison**:
 - **Iterative**: O(n) time, O(1) space - Best for production
 - **Recursive**: O(2^n) time without memoization - Good for understanding recursion
 - **With Memoization**: O(n) time, O(n) space - Balance between clarity and efficiency
 
 ---
+
+
+
+
+
+
+=========hre new content
+
+
+
+
+
 
 **Subsets**:
 ```go
@@ -1599,6 +1614,106 @@ func backtrack(nums []int, target int, index int, current []int, result *[][]int
 
 }
 ```
+
+
+# Heap 
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type Heap struct {
+	Heap []int
+}
+
+func NewHeap() *Heap {
+	return &Heap{
+		Heap: append([]int{}, 0),
+	}
+}
+
+func (h *Heap) Push(val int) {
+	h.Heap = append(h.Heap, val)
+	i := len(h.Heap) - 1
+
+	// Percolate up
+	for i > 1 && h.Heap[i] < h.Heap[i/2] {
+		// Swap
+		h.Heap[i], h.Heap[i/2] = h.Heap[i/2], h.Heap[i]
+		i = i / 2
+	}
+}
+
+func (h *Heap) Pop() int {
+	if len(h.Heap) == 1 {
+		return -1
+	}
+
+	if len(h.Heap) == 2 {
+		res := h.Heap[1]
+		h.Heap = h.Heap[:1]
+		return res
+	}
+
+	res := h.Heap[1]
+	h.Heap[1] = h.Heap[len(h.Heap)-1]
+	h.Heap = h.Heap[:len(h.Heap)-1]
+	i := 1
+
+	// Percolate down
+	for 2*i < len(h.Heap) {
+		if 2*i+1 < len(h.Heap) && h.Heap[2*i+1] < h.Heap[2*i] && h.Heap[i] > h.Heap[2*i+1] {
+			// Swap right child
+			h.Heap[i], h.Heap[2*i+1] = h.Heap[2*i+1], h.Heap[i]
+			i = 2*i + 1
+		} else if h.Heap[i] > h.Heap[2*i] {
+			// Swap left child
+			h.Heap[i], h.Heap[2*i] = h.Heap[2*i], h.Heap[i]
+			i = 2 * i
+		} else {
+			break
+		}
+	}
+	return res
+}
+
+func (h *Heap) Top() int {
+	if len(h.Heap) > 1 {
+		return h.Heap[1]
+	}
+	return -1
+}
+
+func (h *Heap) Heapify(arr []int) {
+	// 0-th position is moved to the end
+	arr = append(arr, arr[0])
+	h.Heap = arr
+	cur := (len(h.Heap) - 1) / 2
+
+	for cur > 0 {
+		// Percolate Down
+		i := cur
+		for 2*i < len(h.Heap) {
+			if 2*i+1 < len(h.Heap) && h.Heap[2*i+1] < h.Heap[2*i] && h.Heap[i] > h.Heap[2*i+1] {
+				// Swap right child
+				h.Heap[i], h.Heap[2*i+1] = h.Heap[2*i+1], h.Heap[i]
+				i = 2*i + 1
+			} else if h.Heap[i] > h.Heap[2*i] {
+				// Swap left child
+				h.Heap[i], h.Heap[2*i] = h.Heap[2*i], h.Heap[i]
+				i = 2 * i
+			} else {
+				break
+			}
+		}
+		cur--
+	}
+}
+```
+
+
 
 ---
 
