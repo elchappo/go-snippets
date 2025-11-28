@@ -1544,9 +1544,67 @@ func climbStairs(n int) int {
 =========hre new content
 
 
+# Backtracking
 
+```go
+package main
 
+import "fmt"
 
+// Definition of TreeNode
+type TreeNode struct {
+	Val         int
+	Left, Right *TreeNode
+}
+
+func NewTreeNode(val int) *TreeNode {
+	return &TreeNode{
+		Val:   val,
+		Left:  nil,
+		Right: nil,
+	}
+}
+
+type TreeMaze struct{}
+
+func (tm *TreeMaze) CanReachLeaf(root *TreeNode) bool {
+	if root == nil || root.Val == 0 {
+		return false
+	}
+	if root.Left == nil && root.Right == nil {
+		return true
+	}
+	if tm.CanReachLeaf(root.Left) {
+		return true
+	}
+	if tm.CanReachLeaf(root.Right) {
+		return true
+	}
+	return false
+}
+
+func (tm *TreeMaze) LeafPath(root *TreeNode, path *[]int) bool {
+	if root == nil || root.Val == 0 {
+		return false
+	}
+	*path = append(*path, root.Val)
+
+	if root.Left == nil && root.Right == nil {
+		return true
+	}
+	if tm.LeafPath(root.Left, path) {
+		return true
+	}
+	if tm.LeafPath(root.Right, path) {
+		return true
+	}
+
+	// remove the last element in path if both recursive calls return false
+	*path = (*path)[:len(*path)-1]
+	return false
+}
+
+```
 
 **Subsets**:
 ```go
