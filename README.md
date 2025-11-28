@@ -1538,6 +1538,39 @@ func climbStairs(n int) int {
 
 ---
 
+
+**Combination Sum**
+```go
+func combinationSum(nums []int, target int) [][]int {
+    var result [][]int
+    var temp []int
+    backtrack(nums, target, 0, temp, &result)
+    return result
+}
+
+func backtrack(nums []int, target int, index int, current []int, result *[][]int){
+
+    if target == 0 {
+        combination := make([]int, len(current))
+        copy(combination, current)
+        *result = append(*result, combination)
+        return 
+    }
+
+    if target < 0 {
+        return
+    }
+
+    for i:= index; i < len(nums); i++ {
+        current := append(current, nums[i])
+        backtrack(nums, target-nums[i], i, current, result)
+        current = current[:len(current)-1]
+    }
+
+}
+
+---
+
 ## Contributing
 
 Feel free to add more algorithms and data structures! When contributing:
