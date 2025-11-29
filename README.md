@@ -1674,7 +1674,7 @@ func backtrack(nums []int, target int, index int, current []int, result *[][]int
 ```
 
 
-# Heap 
+# Heap O(n)
 ```go
 package main
 
@@ -1789,6 +1789,46 @@ func (this *KthLargest) Add(val int) int {
     return this.arr[len(this.arr)-this.k]
 }
 ```
+
+
+# Last Stone Weight
+
+```go
+func lastStoneWeight(stones []int) int {
+
+    for len(stones) > 1 {
+        sort.Ints(stones)
+        if stones[len(stones)-1] == stones[len(stones)-2] {
+            stones = stones[:len(stones)-2]
+        } else{
+            stones[len(stones)-2] = stones[len(stones)-1]- stones[len(stones)-2]
+            stones = stones[:len(stones)-1]
+        }
+    }
+
+    if len(stones) == 0{
+        return 0
+    } else {
+        return stones[0]
+    }
+}
+```
+
+
+K Closest Points to Origin
+
+```Go
+func kClosest(points [][]int, k int) [][]int {
+    sort.Slice(points, func(i, j int) bool {
+        return points[i][0]*points[i][0] + points[i][1]*points[i][1] <
+               points[j][0]*points[j][0] + points[j][1]*points[j][1]
+    })
+    return points[:k]
+}****
+```
+
+
+
 
 ---
 
