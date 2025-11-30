@@ -1827,6 +1827,25 @@ func kClosest(points [][]int, k int) [][]int {
 }****
 ```
 
+# Hashing / Maps
+## Contains Duplicate
+
+```GO
+func hasDuplicate(nums []int) bool {
+    seen := make(map[int]bool)
+
+    for _ , num := range nums {
+        if seen[num] {
+            return true
+        }
+        seen[num] = true
+    }
+
+    return false
+
+}
+
+```
 
 
 
