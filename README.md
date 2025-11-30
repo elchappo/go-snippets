@@ -1847,7 +1847,63 @@ func hasDuplicate(nums []int) bool {
 
 ```
 
+# Two Sum
+```GO
+```
+func twoSum(nums []int, target int) []int {
 
+    for i , num := range nums {
+
+        for j , otherNum:= range nums {
+
+            if otherNum == target -num && i != j {
+                return []int{i,j}
+            }
+
+        }
+    }
+
+    return []int{}
+}
+
+# LRU Cache
+https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU
+```go
+type LRUCache struct {
+    capacity int
+    keys map[int]int
+    values []int
+}
+
+func Constructor(capacity int) LRUCache {
+    return LRUCache{
+        capacity: capacity,
+        keys: make(map[int]int),
+        values: make([]int, 0,capacity),
+    }
+}
+
+func (this *LRUCache) Get(key int) int {
+    if val, ok := this.keys[key]; ok {
+        return val
+    }
+    return -1
+}
+
+func (this *LRUCache) Put(key int, value int) {
+    if _, ok := this.keys[key]; ok {
+        this.keys[key] = value
+    }else{
+        if len(this.values) >= this.capacity {
+            delete(this.keys, this.values[0])
+            this.values = this.values[1:]
+        }
+        this.keys[key] = value
+        this.values = append(this.values, key)
+    }
+}
+
+```
 
 ---
 
