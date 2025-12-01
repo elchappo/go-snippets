@@ -1047,30 +1047,54 @@ func InsertionSort(arr []int) []int {
 
 ![Merge Sort](https://blog.boot.dev/img/800/merge_sort_gif.gif)
 
-**Description**: A divide-and-conquer algorithm that recursively splits the array into halves until single elements remain, then merges them back in sorted order. Guarantees O(n log n) performance regardless of input.
+**Description**: A divide-and-conquer algorithm that recursively splits the array into halves until single elements remain, then merges them back in sorted order. The algorithm guarantees O(n log n) performance in all cases by consistently dividing the problem into equal halves and combining the sorted results.
 
-**Algorithm Approach**: Divide and conquer
-- **Divide**: Split array into two halves recursively
+**Algorithm Approach**: Recursive divide and conquer
+- **Divide**: Recursively split array into two halves until single elements remain
+- **Conquer**: Merge sorted halves back together in order
+- **Merge process**: Compare elements from both halves, place smaller one first
+- **Key insight**: Merging two sorted arrays is O(n), and we do this log n times
 
-![Merge Sort](https://blog.boot.dev/img/800/merge_sort_gif.gif)
+**Time Complexity**: 
+- **Best case**: O(n log n) - Still needs to divide and merge everything
+- **Average case**: O(n log n) - Consistent performance
+- **Worst case**: O(n log n) - Guaranteed upper bound
+- **Where n** is the number of elements
 
-**Description**: Divide-and-conquer algorithm that recursively splits array, sorts halves, and merges them.
-
-**Time Complexity**: O(n log n) in all cases  
-**Space Complexity**: O(n)
+**Space Complexity**: O(n) - Requires temporary arrays for merging
 
 **Pros**:
-- Guaranteed O(n log n) performance
-- Stable sort
-- Predictable performance
-- Good for linked lists
+- Guaranteed O(n log n) performance in all cases
+- Stable sort (preserves relative order of equal elements)
+- Predictable performance (no worst-case degradation)
+- Excellent for linked lists (no random access needed)
+- Parallelizable (can merge independently)
+- Good for external sorting (large datasets on disk)
 
 **Cons**:
-- Requires O(n) extra space
-- Not in-place
-- Slower than quicksort in practice for arrays
+- Requires O(n) extra space (not in-place)
+- Slower than quicksort in practice for arrays (more memory operations)
+- Recursive implementation uses call stack space
+- Overhead of copying arrays during merge
+- Not adaptive (doesn't benefit from partially sorted data)
 
-**Usage**: When stable sort is required, sorting linked lists, or when consistent performance is critical.
+**When to Use**:
+- When stable sort is required (preserving order of equal elements)
+- Sorting linked lists (works better than quicksort)
+- When worst-case O(n log n) guarantee is needed
+- External sorting of large files
+- When predictable performance is critical
+- Parallel/distributed sorting systems
+
+**When NOT to Use**:
+- When memory is severely constrained (needs O(n) space)
+- Small arrays (insertion sort is simpler and faster)
+- When in-place sorting is required (use quicksort or heapsort)
+- Nearly sorted data where you want to take advantage (use insertion sort)
+
+**Usage**: When stable sort is required, sorting linked lists, or when consistent O(n log n) performance is critical.
+
+**Related Algorithms**: Quick Sort, Heap Sort, Tim Sort (hybrid Merge+Insertion)
 
 ```go
 func mergeSort(items []int) []int {
