@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Algorithms & Data Structures - Memory Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .section-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .section-btn {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card.flipped .card-front {
+            transform: rotateY(180deg);
+        }
+
+        .card.flipped .card-back {
+            transform: rotateY(0deg);
+        }
+
+        .card-front,
+        .card-back {
+            transition: transform 0.6s;
+            backface-visibility: hidden;
+        }
+
+        .card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotateY(-180deg);
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .card-description {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .complexity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .complexity-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .complexity-label {
+            font-size: 0.8em;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .complexity-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .pros,
+        .cons {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .pros {
+            border-left: 4px solid #28a745;
+        }
+
+        .cons {
+            border-left: 4px solid #dc3545;
+        }
+
+        .pros h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .cons h4 {
+            color: #dc3545;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .pros ul,
+        .cons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pros li,
+        .cons li {
+            padding: 5px 0;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .pros li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .cons li:before {
+            content: "✗ ";
+            color: #dc3545;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .usage {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .usage-label {
+            font-weight: 700;
+            color: #856404;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .usage-text {
+            color: #856404;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin-top: 15px;
+        }
+
+        .code-block code {
+            color: #61afef;
+        }
+
+        .keyword {
+            color: #c678dd;
+        }
+
+        .function {
+            color: #61afef;
+        }
+
+        .string {
+            color: #98c379;
+        }
+
+        .comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .flip-hint {
+            text-align: center;
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .section-header {
+            color: white;
+            font-size: 2em;
+            margin: 40px 0 20px 0;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+
+            .complexity {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .show-code-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .show-code-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Go Algorithms & Data Structures</h1>
+            <p>Interactive Memory Cards - Click to flip and reveal code!</p>
+        </header>
+
+        <div class="section-nav">
+            <button class="section-btn active" onclick="filterSection('all')">All</button>
+            <button class="section-btn" onclick="filterSection('array')">Arrays</button>
+            <button class="section-btn" onclick="filterSection('stack')">Stack & Queue</button>
+            <button class="section-btn" onclick="filterSection('linked')">Linked Lists</button>
+            <button class="section-btn" onclick="filterSection('sorting')">Sorting</button>
+            <button class="section-btn" onclick="filterSection('search')">Search</button>
+            <button class="section-btn" onclick="filterSection('tree')">Trees</button>
+            <button class="section-btn" onclick="filterSection('dp')">Dynamic Programming</button>
+        </div>
+
+        <div id="cards-wrapper"></div>
+    </div>
+
+    <script>
+        const algorithms = [
+            // Array Algorithms
+            {
+                category: 'array',
+                title: 'Remove Duplicates From Sorted Array',
+                description: 'Removes duplicate elements from a sorted array in-place using two-pointer technique.',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                pros: [
+                    'In-place modification (no extra space)',
+                    'Single pass through array',
+                    'Efficient for sorted arrays'
+                ],
+                cons: [
+                    'Only works on sorted arrays',
+                    'Modifies original array'
+                ],
+                usage: 'When you need to remove duplicates from a sorted array without using extra space.',
+                code: `func removeDuplicates(nums []int) int {
+    if len(nums) == 0 {
+        return 0
+    }
+
+    writeIndex := 1
+    for i := 1; i < len(nums); i++ {
+        if nums[i] != nums[i-1] {
+            nums[writeIndex] = nums[i]
+            writeIndex++
+        }
+    }
+    return writeIndex
+}`
+            },
+            {
+                category: 'array',
+                title: 'Remove Element',
+                description: 'Removes all instances of a specific value from an array in-place.',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                pros: [
+                    'In-place modification',
+                    'Works on unsorted arrays',
+                    'Simple implementation'
+                ],
+                cons: [
+                    'Modifies original array',
+                    'Order may not be preserved'
+                ],
+                usage: 'When you need to filter out specific values from an array without allocating new memory.',
+                code: `func removeElement(nums []int, val int) int {
+    if len(nums) == 0 {
+        return 0
+    }
+
+    nIndex := 0
+    for _, num := range nums {
+        if num != val {
+            nums[nIndex] = num
+            nIndex++
+        }
+    }
+    return nIndex
+}`
+            },
+            {
+                category: 'array',
+                title: 'Concatenation of Array',
+                description: 'Creates a new array by concatenating the original array with itself.',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(n)',
+                pros: [
+                    'Simple and readable',
+                    'Built-in Go append function'
+                ],
+                cons: [
+                    'Creates new array (memory allocation)'
+                ],
+                usage: 'When you need to duplicate array elements in sequence.',
+                code: `func getConcatenation(nums []int) []int {
+    return append(nums, nums...)
+}`
+            },
+            // Stack & Queue
+            {
+                category: 'stack',
+                title: 'Valid Parentheses',
+                description: 'Validates if a string of brackets is properly balanced using a stack.',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(n)',
+                pros: [
+                    'Handles multiple bracket types',
+                    'Clear and maintainable',
+                    'Efficient single-pass solution'
+                ],
+                cons: [
+                    'Requires extra space for stack'
+                ],
+                usage: 'Validating balanced expressions in compilers, parsers, or mathematical expressions.',
+                code: `func isValid(s string) bool {
+    stack := []rune{}
+    pairs := map[rune]rune{
+        '(': ')', '{': '}', '[': ']',
+    }
+
+    for _, ch := range s {
+        if expected, isOpen := pairs[ch]; isOpen {
+            stack = append(stack, expected)
+        } else {
+            if len(stack) == 0 || stack[len(stack)-1] != ch {
+                return false
+            }
+            stack = stack[:len(stack)-1]
+        }
+    }
+    return len(stack) == 0
+}`
+            },
+            {
+                category: 'stack',
+                title: 'Min Stack',
+                description: 'Stack that supports push, pop, top, and retrieving minimum element in O(1) time.',
+                timeComplexity: 'O(1) for all ops',
+                spaceComplexity: 'O(n)',
+                pros: [
+                    'Constant time minimum retrieval',
+                    'All standard stack operations remain O(1)'
+                ],
+                cons: [
+                    'Uses double the space (two stacks)'
+                ],
+                usage: 'When you need to track the minimum value in a stack efficiently (e.g., stock price tracking).',
+                code: `type MinStack struct {
+    stack []int
+    min   []int
+}
+
+func (this *MinStack) Push(val int) {
+    this.stack = append(this.stack, val)
+    if len(this.min) == 0 || val <= this.min[len(this.min)-1] {
+        this.min = append(this.min, val)
+    } else {
+        this.min = append(this.min, this.min[len(this.min)-1])
+    }
+}`
+            },
+            // Linked Lists
+            {
+                category: 'linked',
+                title: 'Reverse Linked List

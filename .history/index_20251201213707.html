@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Algorithms - Flashcards</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Go Algorithms Flashcards</h1>
+            <p>Learn with interactive flashcards • Use ← → arrow keys to navigate</p>
+        </header>
+        <div class="controls">
+            <div class="section-nav" id="nav">
+                <button class="section-btn active" onclick="filterSection('all')">All</button>
+            </div>
+            <button class="reset-btn" onclick="resetProgress()">Reset Progress</button>
+        </div>
+        <div class="progress-info" id="progress-info">Loading...</div>
+        <div class="card-selector" id="card-selector" style="display: none;">
+            <span class="card-selector-label">Jump to Card:</span>
+            <div class="card-selector-grid" id="card-selector-grid"></div>
+        </div>
+        <div id="card-wrapper" class="card-wrapper">
+            <div class="loading">Loading algorithms...</div>
+        </div>
+        <div class="keyboard-hint">💡 Tip: Use ← → arrow keys to navigate • Space to mark as known</div>
+    </div>
+    <div class="print-content hidden" id="print-content"></div>
+    <script src="algorithms-data.js"></script>
+    <script>
+        let algorithms = [];
+        let filteredAlgorithms = [];
+        let currentFilter = 'all';
+        let currentIndex = 0;
+        let knownCards = new Set();
+
+        const sectionMap = {
+            'Array & String Algorithms': 'array',
+            'Stack & Queue': 'stack',
+            'Linked Lists': 'linked',
+            'Sorting Algorithms': 'sorting',
+            'Search Algorithms': 'search',
+            'Binary Search Trees': 'tree',
+            'Tree Traversal & Operations': 'tree',
+            'Dynamic Programming': 'dp'
+        };
+
+        function loadKnownCards() {
+            const saved = localStorage.getItem('knownCards');
+            if (saved) knownCards = new Set(JSON.parse(saved));
+        }
+
+        function saveKnownCards() {
+            localStorage.setItem('knownCards', JSON.stringify([...knownCards]));
+        }
+
+        function resetProgress() {
+            if (confirm('Reset all progress? This will mark all cards as unknown.')) {
+                knownCards.clear

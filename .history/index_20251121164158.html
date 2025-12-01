@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Algorithms & Data Structures - Memory Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .section-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .section-btn {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .card-description {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .complexity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .complexity-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .complexity-label {
+            font-size: 0.8em;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .complexity-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .pros,
+        .cons {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .pros {
+            border-left: 4px solid #28a745;
+        }
+
+        .cons {
+            border-left: 4px solid #dc3545;
+        }
+
+        .pros h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .cons h4 {
+            color: #dc3545;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .pros ul,
+        .cons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pros li,
+        .cons li {
+            padding: 5px 0;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .pros li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .cons li:before {
+            content: "✗ ";
+            color: #dc3545;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .usage {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .usage-label {
+            font-weight: 700;
+            color: #856404;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .usage-text {
+            color: #856404;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin-top: 15px;
+            white-space: pre;
+        }
+
+        .show-code-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .show-code-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .pros-cons,
+            .complexity {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Go Algorithms & Data Structures</h1>
+            <p>Interactive Memory Cards - Click "Show Code" to reveal implementation!</p>
+        </header>
+        <div class="section-nav">
+            <button class="section-btn active" onclick="filterSection('all')">All</button>
+            <button class="section-btn" onclick="filterSection('array')">Arrays</button>
+            <button class="section-btn" onclick="filterSection('stack')">Stack & Queue</button>
+            <button class="section-btn" onclick="filterSection('linked')">Linked Lists</button>
+            <button class="section-btn" onclick="filterSection('sorting')">Sorting</button>
+            <button class="section-btn" onclick="filterSection('search')">Search</button>
+            <button class="section-btn" onclick="filterSection('tree')">Trees</button>
+            <button class="section-btn" onclick="filterSection('dp')">Dynamic Programming</button>
+        </div>
+        <div id="cards-wrapper"></div>
+    </div>
+    <script>
+        const algorithms = [
+            { category: 'array', title: 'Remove Duplicates', description: 'Removes duplicate elements from sorted array in-place using two-pointer technique.', timeComplexity: 'O(n)', spaceComplexity: 'O(1)', pros: ['In-place modification', 'Single pass', 'Efficient for sorted arrays'], cons: ['Only works on sorted arrays', 'Modifies original'], usage: 'Remove duplicates from sorted array without extra space.', code: 'func removeDuplicates(nums []int) int {\n    if len(nums) == 0 { return 0 }\n    writeIndex := 1\n    for i := 1; i < len(nums); i++ {\n        if nums[i] != nums[i-1] {\n            nums[writeIndex] = nums[i]\n            writeIndex++\n        }\n    }\n    return writeIndex\n}' },
+            { category: 'stack', title: 'Valid Parentheses', description: 'Validates if brackets are properly balanced using a stack.', timeComplexity: 'O(n)', spaceComplexity: 'O(n)', pros: ['Handles multiple bracket types', 'Clear and maintainable', 'Efficient single-pass'], cons: ['Requires extra space'], usage: 'Validating balanced expressions in compilers, parsers.', code: 'func isValid(s string) bool {\n    stack := []rune{}\n    pairs := map[rune]rune{\'(\': \')\', \'{\': \'}\', \'[\': \']\'}\n    for _, ch := range s {\n        if expected, isOpen := pairs[ch]; isOpen {\n            stack = append(stack, expected)\n        } else {\n            if len(stack) == 0 || stack[len(stack)-1] != ch {\n                return false\n            }\n            stack = stack[:len(stack)-1]\n        }\n    }\n    return len(stack) == 0\n}' },
+            { category: 'stack', title: 'Min Stack', description: 'Stack supporting push, pop, top, and O(1) minimum retrieval.', timeComplexity: 'O(1) all ops', spaceComplexity: 'O(n)', pros: ['Constant time minimum', 'All operations O(1)'], cons: ['Uses double space'], usage: 'Track minimum value in stack efficiently.', code: 'type MinStack struct {\n    stack []int\n    min   []int\n}\nfunc (this *MinStack) Push(val int) {\n    this.stack = append(this.stack, val)\n    if len(this.min) == 0 || val <= this.min[len(this.min)-1] {\n        this.min = append(this.min, val)\n    } else {\n        this.min = append(this.min, this.min[len(this.min)-1])\n    }\n}' },
+            { category: 'linked', title: 'Reverse Linked List', description: 'Reverses a singly linked list using recursion.', timeComplexity: 'O(n)', spaceComplexity: 'O(n)', pros: ['Clean recursive solution', 'Easy to understand'], cons: ['Uses call stack', 'Stack overflow risk'], usage: 'List reversal, interview questions.', code: 'func reverseList(head *ListNode) *ListNode {\n    if head == nil { return nil }\n    newHead := head\n    if head.Next != nil {\n        newHead = reverseList(head.Next)\n        head.Next.Next = head\n    }\n    head.Next = nil\n    return newHead\n}' },
+            { category: 'linked', title: 'Merge Two Sorted Lists', description: 'Merges two sorted linked lists into one.', timeComplexity: 'O(n+m)', spaceComplexity: 'O(1)', pros: ['In-place merging', 'Maintains order', 'Efficient'], cons: ['Modifies original lists'], usage: 'Merge sort for linked lists, combining sorted streams.', code: 'func mergeTwoLists(l1, l2 *ListNode) *ListNode {\n    dummy := &ListNode{}\n    node := dummy\n    for l1 != nil && l2 != nil {\n        if l1.Val < l2.Val {\n            node.Next = l1\n            l1 = l1.Next\n        } else {\n            node.Next = l2\n            l2 = l2.Next\n        }\n        node = node.Next\n    }\n    if l1 != nil { node.Next = l1 } else { node.Next = l2 }\n    return dummy.Next\n}' },
+            { category: 'sorting', title: 'Insertion Sort', description: 'Builds sorted array by inserting elements into correct position.', timeComplexity: 'O(n²)', spaceComplexity: 'O(1)', pros: ['Simple', 'Good for small data', 'Stable', 'In-place'], cons: ['Quadratic time', 'Not for large arrays'], usage: 'Small datasets, nearly sorted data.', code: 'func InsertionSort(arr []int) []int {\n    for i := 1; i < len(arr); i++ {\n        j := i\n        for j > 0 && arr[j] < arr[j-1] {\n            arr[j], arr[j-1] = arr[j-1], arr[j]\n            j--\n        }\n    }\n    return arr\n}' },
+            { category: 'sorting', title: 'Merge Sort', description: 'Divide-and-conquer: splits, sorts, merges.', timeComplexity: 'O(n log n)', spaceComplexity: 'O(n)', pros: ['Guaranteed O(n log n)', 'Stable', 'Predictable'], cons: ['Extra space', 'Not in-place'], usage: 'When stable sort required, consistent performance critical.', code: 'func mergeSort(items []int) []int {\n    if len(items) < 2 { return items }\n    mid := len(items)/2\n    return merge(mergeSort(items[:mid]), mergeSort(items[mid:]))\n}\nfunc merge(a, b []int) []int {\n    result := []int{}\n    i, j := 0, 0\n    for i < len(a) && j < len(b) {\n        if a[i] < b[j] {\n            result = append(result, a[i])\n            i++\n        } else {\n            result = append(result, b[j])\n            j++\n        }\n    }\n    return append(append(result, a[i:]...), b[j:]...)\n}' },
+            { category: 'sorting', title: 'Quick Sort', description: 'Divide-and-conquer using pivot partitioning.', timeComplexity: 'O(n log n) avg', spaceComplexity: 'O(log n)', pros: ['Fast average case', 'In-place', 'Cache-friendly'], cons: ['Unstable', 'O(n²) worst case'], usage: 'General-purpose when stability not required.', code: 'func quickSort(arr []int, low, high int) {\n    if low < high {\n        pivot := arr[high]\n        i := low\n        for j := low; j < high; j++ {\n            if arr[j] < pivot {\n                arr[i], arr[j] = arr[j], arr[i]\n                i++\n            }\n        }\n        arr[i], arr[high] = arr[high], arr[i]\n        quickSort(arr, low, i-1)\n        quickSort(arr, i+1, high)\n    }\n}' },
+            { category: 'search', title: 'Binary Search', description: 'Searches sorted array by dividing search interval in half.', timeComplexity: 'O(log n)', spaceComplexity: 'O(1)', pros: ['Very fast', 'Simple', 'Minimal memory'], cons: ['Requires sorted array', 'Random access needed'], usage: 'Searching sorted arrays, finding insertion points.', code: 'func binarySearch(arr []int, target int) int {\n    L, R := 0, len(arr

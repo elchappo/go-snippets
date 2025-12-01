@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Algorithms - Memory Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .section-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .section-btn {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .card-description {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .complexity {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .complexity-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .complexity-label {
+            font-size: 0.8em;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .complexity-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .pros,
+        .cons {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .pros {
+            border-left: 4px solid #28a745;
+        }
+
+        .cons {
+            border-left: 4px solid #dc3545;
+        }
+
+        .pros h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .cons h4 {
+            color: #dc3545;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .pros ul,
+        .cons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pros li,
+        .cons li {
+            padding: 5px 0;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .pros li:before {
+            content: "✓ ";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .cons li:before {
+            content: "✗ ";
+            color: #dc3545;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .usage {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .usage-label {
+            font-weight: 700;
+            color: #856404;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .usage-text {
+            color: #856404;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+
+        .show-code-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .show-code-btn:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+            padding: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .pros-cons,
+            .complexity {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Go Algorithms & Data Structures</h1>
+            <p>Interactive Memory Cards - Data sourced from README.md</p>
+        </header>
+        <div class="section-nav" id="nav">
+            <button class="section-btn active" onclick="filterSection('all')">All</button>
+        </div>
+        <div id="cards-wrapper" class="cards-container">
+            <div class="loading">Loading algorithms from README.md...</div>
+        </div>
+    </div>
+    <script>
+        let algorithms = [];
+        let currentFilter = 'all';
+
+        // Section mapping
+        const sectionMap = {
+            'Array & String Algorithms': 'array',
+            'Stack & Queue': 'stack',
+            'Linked Lists': 'linked',
+            'Sorting Algorithms': 'sorting',
+            'Search Algorithms': 'search',
+            'Binary Search Trees': 'tree',
+            'Tree Traversal & Operations': 'tree',
+            'Dynamic Programming': 'dp'
+        };
+
+        // Parse README.md content
+        function parseReadme(content) {
+            const algos = [];
+            const sections = content.split(/^## /m).slice(1);
+
+            sections.forEach(section => {
+                const lines = section.split('\n');
+                const sectionTitle = lines[0].trim();
+                const category = sectionMap[sectionTitle];
+
+                if (category) {
+                    const sectionContent = lines.slice(1).join('\n');
+                    const algoSections = sectionContent.split(/^### /m).slice(1);
+
+                    algoSections.forEach(algoSection => {
+                        const algo = parseAlgorithm(algoSection, category);
+                        if (algo) algos.push(algo);
+                    });
+                }
+            });
+
+            return algos;
+        }
+
+        // Parse individual algorithm
+        function parseAlgorithm(content, category) {
+            const lines = content.split('\n');
+            const title = lines[0].trim();
+
+            // Skip non-algorithm sections
+            if (['Comparison Table', 'Tree Node Definition'].includes(title)) {
+                return null;
+            }
+
+            const algo = {
+                category,
+                title,
+                description: '',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(1)',
+                pros: [],
+                cons: [],
+                usage: '',
+                code: ''
+            };
+
+            let inPros = false, inCons = false, inCode = false;
+            let codeLines = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i];
+
+                if (line.startsWith('**Description**:')) {
+                    algo.description = line.replace('**Description**:', '').trim();
+                } else if (line.startsWith('**Time Complexity**:')) {
+                    algo.timeComplexity = line.replace('**Time Complexity**:', '').trim();
+                } else if (line.startsWith('**Space Complexity**:')) {
+                    algo.spaceComplexity = line.replace('**Space Complexity**:', '').trim();
+                } else if (line.startsWith('**Pros**:')) {
+                    inPros = true;
+                    inCons = false;
+                } else if (line.startsWith('**Cons**:')) {
+                    inCons = true;
+                    inPros = false;
+                } else if (line.startsWith('**Usage**:')) {
+                    algo.usage = line.replace('**Usage**:', '').trim();
+                    inPros = false;
+                    inCons = false;
+                } else if (line.startsWith('```go')) {
+                    inCode = true;
+                    inPros = false;
+                    inCons = false;
+                } else if (line.startsWith('```') && inCode) {
+                    algo.code = codeLines.join('\n');
+                    break;
+                } else if (inCode) {
+                    codeLines.push(line);
+                } else if (inPros && line.startsWith('- ')) {
+                    algo.pros.push(line.substring(2).trim());
+                } else if (inCons && line.startsWith('- ')) {
+                    algo.cons.push(line.substring(2).trim());
+                }
+            }
+
+            // Only return if we have minimum required data
+            return (algo.description && (algo.pros.length > 0 || algo.cons.length > 0)) ? algo : null;
+        }
+
+        // Filter algorithms by category
+        function filterSection(category) {
+            currentFilter = category;
+            document.querySelectorAll('.section-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderCards();
+        }
+
+        // Toggle code visibility
+        function toggleCode(index) {
+            const codeBlock = document.getElementById(`code-${index}`);
+            const btn = document.getElementById(`btn-${index}`);
+            if (codeBlock.classList.contains('hidden')) {
+                codeBlock.classList.remove('hidden');
+                btn.textContent = 'Hide Code';
+            } else {
+                codeBlock.classList.add('hidden');
+                btn.textContent = 'Show Code';
+            }
+        }
+
+        // Render algorithm cards
+        function renderCards() {
+            const container = document.getElementById('cards-wrapper');
+            const filtered = currentFilter === 'all'
+                ? algorithms
+                : algorithms.filter(a => a.category === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="loading">No algorithms found in this category.</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map((algo, index) => `
+                <div class="card">
+                    <div class="card-title">${algo.title}</div>
+                    <div class="card-description">${algo.description}</div>
+                    <div class="complexity">
+                        <div class="complexity-item">
+                            <div class="complexity-label">Time</div>
+                            <div class="complexity-value">${algo.timeComplexity}</div>
+                        </div>
+                        <div class="complexity-item">
+                            <div class="complexity-label">Space</div>
+                            <div class="complexity-value">${algo.spaceComplexity}</div>
+                        </div>
+                    </div>
+                    ${algo.pros.length > 0 || algo.cons.length > 0 ? `
+                    <div class="pros-cons">
+                        ${algo.pros.length > 0 ? `
+                        <div class="pros">
+                            <h4>Pros</h4>
+                            <ul>${algo.pros.slice(0, 3).map(p => `<li>${p}</li>`).join('')}</ul>
+                        </div>
+                        ` : '<div></div>'}
+                        ${algo.cons.length > 0 ? `
+                        <div class="cons">
+                            <h4>Cons</h4>
+                            <ul>${algo.cons.slice(0, 3).map(c => `<li>${c}</li>`).join('')}</ul>
+                        </div>
+                        ` : '<div></div>'}
+                    </div>
+                    ` : ''}
+                    ${algo.usage ? `
+                    <div class="usage">
+                        <div class="usage-label">Usage</div>
+                        <div class="usage-text">${algo.usage}</div>
+                    </div>
+                    ` : ''}
+                    ${algo.code ? `
+                    <button class="show-code-btn" id="btn-${index}" onclick="toggleCode(${index})">Show Code</button>
+                    <div id="code-${index}" class="code-block hidden">${algo.code}</div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Update navigation buttons
+        function updateNav() {
+            const categories = new Set(algorithms.map(a => a.category));
+            const categoryNames = {
+                'array': 'Arrays',
+                'stack': 'Stack & Queue',
+                'linked': 'Linked Lists',
+                'sorting': 'Sorting',
+                'search': 'Search',
+                'tree': 'Trees',
+                'dp': 'Dynamic Programming'
+            };
+
+            const nav = document.getElementById('nav');
+            nav.innerHTML = '<button class="section-btn active" onclick="filterSection(\'all\')">All</button>';
+
+            categories.forEach(cat => {
+                nav.innerHTML += `<button class="section-btn
