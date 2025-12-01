@@ -102,6 +102,26 @@ func AlternativeApproach(input Type) ReturnType {
     - [Comparison Table](#comparison-table)
     - [Insertion Sort](#insertion-sort)
     - [Merge Sort](#merge-sort)
+    - [Quick Sort](#quick-sort)
+    - [Bucket Sort](#bucket-sort)
+  - [Search Algorithms](#search-algorithms)
+    - [Binary Search](#binary-search)
+    - [Koko Eating Bananas (Binary Search Application)](#koko-eating-bananas-binary-search-application)
+  - [Binary Search Trees](#binary-search-trees)
+    - [Tree Node Definition](#tree-node-definition)
+    - [BST Search](#bst-search)
+    - [Insert into BST](#insert-into-bst)
+    - [Delete Node in BST](#delete-node-in-bst)
+  - [Tree Traversal \& Operations](#tree-traversal--operations)
+    - [Binary Tree Inorder Traversal](#binary-tree-inorder-traversal)
+    - [Kth Smallest Element in BST](#kth-smallest-element-in-bst)
+    - [Construct Binary Tree from Preorder and Inorder](#construct-binary-tree-from-preorder-and-inorder)
+    - [Breadth-First Search (Level Order Traversal)](#breadth-first-search-level-order-traversal)
+    - [Design Binary Search Tree (TreeMap)](#design-binary-search-tree-treemap)
+  - [Dynamic Programming](#dynamic-programming)
+    - [Climbing Stairs (Fibonacci)](#climbing-stairs-fibonacci)
+  - [Contributing](#contributing)
+  - [Resources](#resources)
 
 ---
 
@@ -1116,23 +1136,53 @@ func mergeKLists(lists []*ListNode) *ListNode {
 
 ![Quick Sort](https://upload.wikimedia.org/wikipedia/commons/f/fe/Quicksort.gif)
 
-**Description**: Divide-and-conquer algorithm using pivot partitioning for in-place sorting.
+**Description**: A divide-and-conquer sorting algorithm that selects a 'pivot' element and partitions the array around it, recursively sorting the sub-arrays. Elements smaller than the pivot go to the left, larger elements go to the right, and the process repeats until the array is sorted.
 
-**Time Complexity**: O(n log n) average, O(n²) worst case  
-**Space Complexity**: O(log n) for recursion stack
+**Algorithm Approach**: Divide and conquer with partitioning
+- **Select pivot**: Choose an element (typically last element)
+- **Partition**: Rearrange array so elements < pivot are left, elements > pivot are right
+- **Recursively sort**: Apply same process to left and right sub-arrays
+- **Key insight**: Each partition places one element in its final sorted position
+
+**Time Complexity**: 
+- **Best case**: O(n log n) - Balanced partitions (pivot near median)
+- **Average case**: O(n log n) - Random pivot selection
+- **Worst case**: O(n²) - Unbalanced partitions (already sorted array with poor pivot choice)
+- **Where n** is the number of elements
+
+**Space Complexity**: O(log n) - Recursion stack for balanced partitions, O(n) worst case
 
 **Pros**:
-- Fast average case performance
-- In-place sorting (low memory)
-- Cache-friendly
-- Often fastest in practice
+- Fast average case performance (often fastest in practice)
+- In-place sorting (low memory overhead)
+- Cache-friendly (good memory locality)
+- Often outperforms other O(n log n) algorithms
+- Simple to implement
 
 **Cons**:
-- Unstable sort
-- Worst case O(n²) (rare with good pivot selection)
-- Not ideal for nearly sorted data
+- Unstable sort (doesn't preserve relative order of equal elements)
+- Worst case O(n²) performance (rare with good pivot selection)
+- Not ideal for nearly sorted data with naive pivot selection
+- Performance sensitive to pivot selection strategy
+- Recursive implementation can cause stack overflow on very large arrays
+
+**When to Use**:
+- General-purpose sorting for large datasets
+- When average-case performance is more important than worst-case
+- Memory-constrained environments (in-place sorting)
+- When stability is not required
+- Sorting primitive types or simple objects
+
+**When NOT to Use**:
+- When worst-case O(n log n) is required (use Merge Sort or Heap Sort)
+- When stability is needed (use Merge Sort)
+- Nearly sorted data with naive pivot (use Insertion Sort or Merge Sort)
+- When consistent performance is critical (use Merge Sort)
+- Small arrays (use Insertion Sort)
 
 **Usage**: General-purpose sorting when stability isn't required and average-case performance matters.
+
+**Related Algorithms**: Merge Sort, Heap Sort, Intro Sort (hybrid Quick/Heap Sort)
 
 ```go
 func partition(arr []int, low, high int) ([]int, int) {
@@ -1189,23 +1239,53 @@ func QuickSort(arr []int, start, end int) {
 
 ### Bucket Sort
 
-**Description**: Distributes elements into buckets, then sorts each bucket (works for limited value ranges).
+**Description**: A distribution-based sorting algorithm that divides elements into a fixed number of buckets, where each bucket represents a range of values. Elements are distributed into appropriate buckets, each bucket is sorted individually, and then all buckets are concatenated to produce the final sorted array.
 
-**Time Complexity**: O(n) when values are uniformly distributed  
-**Space Complexity**: O(n)
+**Algorithm Approach**: Distribution and counting
+- **Create buckets**: Initialize array of counters for each possible value
+- **Distribute**: Count occurrences of each value
+- **Reconstruct**: Fill original array by iterating through buckets
+- **Key insight**: Works efficiently when value range is small and known
+
+**Time Complexity**: 
+- **Best case**: O(n + k) - When values are uniformly distributed
+- **Average case**: O(n + k) - Linear time for limited range
+- **Worst case**: O(n + k) - Where k is the number of distinct values
+- **Where n** is the number of elements, **k** is the range of values
+
+**Space Complexity**: O(k) - Additional space for bucket counters
 
 **Pros**:
-- Linear time for specific use cases
-- Simple implementation for limited ranges
+- Linear time complexity for limited value ranges
+- Simple and easy to implement
 - Efficient for uniformly distributed data
+- Stable (can be made stable with proper implementation)
+- No comparison operations needed
 
 **Cons**:
-- Only works for limited value ranges
-- Not general-purpose
-- Unstable
-- Requires knowing value range beforehand
+- Only works for limited, known value ranges
+- Not general-purpose (requires prior knowledge of data)
+- Memory inefficient for large value ranges
+- Not suitable for floating-point or complex data types
+- Performance depends heavily on value distribution
 
-**Usage**: Sorting data with known, limited range (e.g., sorting 0s, 1s, and 2s).
+**When to Use**:
+- Sorting integers with small, known range (e.g., 0-9, 0-100)
+- Counting sort scenarios (sorting 0s, 1s, 2s)
+- When input values are uniformly distributed
+- Sorting by category or discrete values
+- When O(n) time is critical and constraints are met
+
+**When NOT to Use**:
+- Large or unknown value ranges (wastes memory)
+- Arbitrary data types (strings, floats, objects)
+- When comparison-based sorting is more appropriate
+- Sparse data distributions (most buckets empty)
+- General-purpose sorting needs (use Quick Sort or Merge Sort)
+
+**Usage**: Sorting data with known, limited range (e.g., sorting 0s, 1s, and 2s), counting sort implementations.
+
+**Related Algorithms**: Counting Sort, Radix Sort, Pigeonhole Sort
 
 ```go
 func bucketSort(arr []int) []int {
