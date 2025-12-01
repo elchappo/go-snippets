@@ -72,27 +72,48 @@
             content.split(/^### /m).slice(1).forEach(section => {
                 const lines = section.split('\n');
                 const title = lines[0].trim();
-                if (!title || title.includes('Main') || title.includes('Tests') || title.includes('Comparison Table')) return;
+                if (!title || title.includes('Main') || title.includes('Tests') || title.includes('Comparison Table') || title.includes('Algorithm Name')) return;
 
                 // Extract description
                 let description = '';
-                const descMatch = section.match(/\*\*Description\*\*:\s*(.+?)(?=\n\n|\*\*Time)/s);
+                const descMatch = section.match(/\*\*Description\*\*:\s*(.+?)(?=\n\n|\*\*Algorithm)/s);
                 if (descMatch) {
                     description = descMatch[1].trim();
                 } else {
                     description = `Implementation of ${title}`;
                 }
 
-                // Extract time complexity
-                let timeComplexity = 'O(n)';
-                const timeMatch = section.match(/\*\*Time Complexity\*\*:\s*(.+?)(?=\n)/);
-                if (timeMatch) {
-                    timeComplexity = timeMatch[1].trim();
+                // Extract algorithm approach
+                let approach = [];
+                const approachMatch = section.match(/\*\*Algorithm Approach\*\*:\s*(.+?)(?:\n- \*\*(.+?)\*\*:\s*(.+?))+/s);
+                if (approachMatch) {
+                    const approachSection = section.match(/\*\*Algorithm Approach\*\*:(.+?)(?=\n\n\*\*)/s);
+                    if (approachSection) {
+                        const items = approachSection[1].match(/- \*\*(.+?)\*\*:\s*(.+?)(?=\n-|\n\n|$)/gs);
+                        if (items) {
+                            approach = items.map(item => {
+                                const match = item.match(/- \*\*(.+?)\*\*:\s*(.+)/s);
+                                return match ? { label: match[1].trim(), text: match[2].trim() } : null;
+                            }).filter(Boolean);
+                        }
+                    }
+                }
+
+                // Extract time complexity (multi-line)
+                let timeComplexity = [];
+                const timeSection = section.match(/\*\*Time Complexity\*\*:\s*\n((?:- .+\n?)+)/);
+                if (timeSection) {
+                    timeComplexity = timeSection[1].split('\n').filter(t => t.trim()).map(t => t.replace(/^- /, '').trim());
+                } else {
+                    const timeMatch = section.match(/\*\*Time Complexity\*\*:\s*(.+?)(?=\n\n|\*\*)/s);
+                    if (timeMatch) {
+                        timeComplexity = [timeMatch[1].trim()];
+                    }
                 }
 
                 // Extract space complexity
                 let spaceComplexity = 'O(1)';
-                const spaceMatch = section.match(/\*\*Space Complexity\*\*:\s*(.+?)(?=\n)/);
+                const spaceMatch = section.match(/\*\*Space Complexity\*\*:\s*(.+?)(?=\n\n|\*\*)/s);
                 if (spaceMatch) {
                     spaceComplexity = spaceMatch[1].trim();
                 }
@@ -111,11 +132,39 @@
                     cons = consMatch[1].split('\n').filter(c => c.trim()).map(c => c.replace(/^- /, '').trim());
                 }
 
-                // Extract usage
+                // Extract when to use
+                let whenToUse = [];
+                const whenToUseMatch = section.match(/\*\*When to Use\*\*:\n((?:- .+\n?)+)/);
+                if (whenToUseMatch) {
+                    whenToUse = whenToUseMatch[1].split('\n').filter(w => w.trim()).map(w => w.replace(/^- /, '').trim());
+                }
+
+                // Extract when NOT to use
+                let whenNotToUse = [];
+                const whenNotToUseMatch = section.match(/\*\*When NOT to Use\*\*:\n((?:- .+\n?)+)/);
+                if (whenNotToUseMatch) {
+                    whenNotToUse = whenNotToUseMatch[1].split('\n').filter(w => w.trim()).map(w => w.replace(/^- /, '').trim());
+                }
+
+                // Extract usage summary
                 let usage = '';
-                const usageMatch = section.match(/\*\*Usage\*\*:\s*(.+?)(?=\n\n|```)/s);
+                const usageMatch = section.match(/\*\*Usage\*\*:\s*(.+?)(?=\n\n|\*\*Common|\*\*Related|```)/s);
                 if (usageMatch) {
                     usage = usageMatch[1].trim();
+                }
+
+                // Extract common pitfalls
+                let pitfalls = [];
+                const pitfallsMatch = section.match(/\*\*Common Pitfalls\*\*(?:\s*\*\(optional\)\*)?\s*:\n((?:- .+\n?)+)/);
+                if (pitfallsMatch) {
+                    pitfalls = pitfallsMatch[1].split('\n').filter(p => p.trim()).map(p => p.replace(/^- /, '').trim());
+                }
+
+                // Extract related algorithms
+                let relatedAlgorithms = '';
+                const relatedMatch = section.match(/\*\*Related Algorithms\*\*:\s*(.+?)(?=\n\n|```|\[)/s);
+                if (relatedMatch) {
+                    relatedAlgorithms = relatedMatch[1].trim();
                 }
 
                 // Extract code
@@ -138,11 +187,16 @@
                     algos.push({
                         title,
                         description,
+                        approach,
                         timeComplexity,
                         spaceComplexity,
                         pros,
                         cons,
+                        whenToUse,
+                        whenNotToUse,
                         usage,
+                        pitfalls,
+                        relatedAlgorithms,
                         code,
                         category
                     });
@@ -190,12 +244,29 @@
             const algo = filteredAlgorithms[currentIndex];
             const isKnown = knownCards.has(algo.title);
 
+            // Build algorithm approach section
+            let approachHTML = '';
+            if (algo.approach && algo.approach.length > 0) {
+                approachHTML = `
+                    <div class="approach-section">
+                        <h4>Algorithm Approach</h4>
+                        <ul class="approach-list">
+                            ${algo.approach.map(item => `<li><strong>${item.label}:</strong> ${item.text}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
             // Build complexity section
+            const timeComplexityHTML = Array.isArray(algo.timeComplexity)
+                ? algo.timeComplexity.map(t => `<div>${t}</div>`).join('')
+                : algo.timeComplexity;
+
             const complexityHTML = `
                 <div class="complexity">
                     <div class="complexity-item">
                         <div class="complexity-label">Time Complexity</div>
-                        <div class="complexity-value">${algo.timeComplexity}</div>
+                        <div class="complexity-value">${timeComplexityHTML}</div>
                     </div>
                     <div class="complexity-item">
                         <div class="complexity-label">Space Complexity</div>
@@ -211,7 +282,7 @@
                 if (algo.pros.length > 0) {
                     prosConsHTML += `
                         <div class="pros">
-                            <h4>Pros</h4>
+                            <h4>✅ Pros</h4>
                             <ul>
                                 ${algo.pros.map(pro => `<li>${pro}</li>`).join('')}
                             </ul>
@@ -221,7 +292,7 @@
                 if (algo.cons.length > 0) {
                     prosConsHTML += `
                         <div class="cons">
-                            <h4>Cons</h4>
+                            <h4>⚠️ Cons</h4>
                             <ul>
                                 ${algo.cons.map(con => `<li>${con}</li>`).join('')}
                             </ul>
@@ -231,24 +302,79 @@
                 prosConsHTML += '</div>';
             }
 
-            // Build usage section
+            // Build when to use section
+            let whenToUseHTML = '';
+            if (algo.whenToUse && algo.whenToUse.length > 0) {
+                whenToUseHTML = `
+                    <div class="when-to-use">
+                        <h4>✨ When to Use</h4>
+                        <ul>
+                            ${algo.whenToUse.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Build when NOT to use section
+            let whenNotToUseHTML = '';
+            if (algo.whenNotToUse && algo.whenNotToUse.length > 0) {
+                whenNotToUseHTML = `
+                    <div class="when-not-to-use">
+                        <h4>🚫 When NOT to Use</h4>
+                        <ul>
+                            ${algo.whenNotToUse.map(w => `<li>${w}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Build usage summary section
             const usageHTML = algo.usage ? `
                 <div class="usage">
-                    <div class="usage-label">When to Use</div>
+                    <div class="usage-label">💡 Usage Summary</div>
                     <div class="usage-text">${algo.usage}</div>
                 </div>
             ` : '';
+
+            // Build common pitfalls section
+            let pitfallsHTML = '';
+            if (algo.pitfalls && algo.pitfalls.length > 0) {
+                pitfallsHTML = `
+                    <div class="pitfalls">
+                        <h4>⚡ Common Pitfalls</h4>
+                        <ul>
+                            ${algo.pitfalls.map(p => `<li>${p}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Build related algorithms section
+            let relatedHTML = '';
+            if (algo.relatedAlgorithms) {
+                relatedHTML = `
+                    <div class="related">
+                        <div class="related-label">🔗 Related Algorithms</div>
+                        <div class="related-text">${algo.relatedAlgorithms}</div>
+                    </div>
+                `;
+            }
 
             wrapper.innerHTML = `
                 <div class="card">
                     <div class="card-title">${algo.title}</div>
                     <div class="card-description">${algo.description}</div>
+                    ${approachHTML}
                     ${complexityHTML}
                     ${prosConsHTML}
+                    ${whenToUseHTML}
+                    ${whenNotToUseHTML}
                     ${usageHTML}
+                    ${pitfallsHTML}
+                    ${relatedHTML}
                     <div class="code-section">
                         <div class="code-header">
-                            <span class="code-label">Go Implementation</span>
+                            <span class="code-label">💻 Go Implementation</span>
                             <button class="print-code-btn" onclick="printCode()">🖨️ Print Code</button>
                         </div>
                         <div class="code-block">${algo.code}</div>

@@ -4,9 +4,81 @@
 
 A comprehensive collection of common algorithms and data structures implemented in Go, with complexity analysis, pros/cons, and usage scenarios.
 
+---
+
+## 📋 Documentation Template
+
+When adding new algorithms to this reference, please follow this standardized template to ensure consistency:
+
+### Algorithm Name
+
+**Description**: [2-3 sentences explaining what the algorithm does and how it works. Start with the core concept, then explain the approach.]
+
+**Algorithm Approach**: [Bulleted breakdown of the key steps]
+- **Step 1**: Brief explanation
+- **Step 2**: Brief explanation
+- **Key insight**: The core concept that makes it work
+
+**Time Complexity**: 
+- **Best case**: O(?) - [When this occurs]
+- **Average case**: O(?) - [Typical scenario]
+- **Worst case**: O(?) - [When this occurs]
+- **Where n** is [define what n represents]
+
+**Space Complexity**: O(?) - [Explain what uses the space]
+
+**Pros**:
+- [Advantage 1]
+- [Advantage 2]
+- [Advantage 3]
+- [Continue as needed]
+
+**Cons**:
+- [Limitation 1]
+- [Limitation 2]
+- [Limitation 3]
+- [Continue as needed]
+
+**When to Use**:
+- [Specific scenario 1]
+- [Specific scenario 2]
+- [Specific scenario 3]
+- [Real-world application examples]
+
+**When NOT to Use**:
+- [Scenario where it's inappropriate 1]
+- [Scenario where it's inappropriate 2]
+- [Better alternatives for certain cases]
+
+**Usage**: [One-line summary of primary use cases]
+
+**Common Pitfalls** *(optional)*:
+- [Common mistake 1]
+- [Common mistake 2]
+
+**Related Algorithms**: [Algorithm 1], [Algorithm 2], [Algorithm 3]
+
+```go
+func AlgorithmName(input Type) ReturnType {
+    // Implementation with clear comments
+    // explaining key steps
+}
+```
+
+**Alternative Implementation** *(if beneficial)*:
+```go
+func AlternativeApproach(input Type) ReturnType {
+    // Different approach to solve same problem
+}
+```
+
+---
+
 ## Table of Contents
 
 - [Go Algorithms \& Data Structures Reference](#go-algorithms--data-structures-reference)
+  - [📋 Documentation Template](#-documentation-template)
+    - [Algorithm Name](#algorithm-name)
   - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
     - [Running Tests](#running-tests)
