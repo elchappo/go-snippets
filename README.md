@@ -102,8 +102,6 @@ func AlternativeApproach(input Type) ReturnType {
     - [Comparison Table](#comparison-table)
     - [Insertion Sort](#insertion-sort)
     - [Merge Sort](#merge-sort)
-    - [Quick Sort](#quick-sort)
-    - [Bucket Sort](#bucket-sort)
 
 ---
 
@@ -318,21 +316,6 @@ func removeElement(nums []int, val int) int {
 ```go
 func getConcatenation(nums []int) []int {
     return append(nums, nums...)
-}
-```
-
-**Alternative Implementation** (manual approach):
-```go
-func getConcatenation(nums []int) []int {
-    n := len(nums)
-    result := make([]int, 2*n)
-    
-    for i := 0; i < n; i++ {
-        result[i] = nums[i]
-        result[i+n] = nums[i]
-    }
-    
-    return result
 }
 ```
 
@@ -722,31 +705,6 @@ func countStudents(students []int, sandwiches []int) int {
 }
 ```
 
-**Alternative Implementation** (simulation approach):
-```go
-func countStudents(students []int, sandwiches []int) int {
-    queue := students
-    stackIndex := 0
-    attempts := 0
-    
-    for len(queue) > 0 && attempts < len(queue) {
-        if queue[0] == sandwiches[stackIndex] {
-            // Student takes sandwich
-            queue = queue[1:]
-            stackIndex++
-            attempts = 0
-        } else {
-            // Student goes to back of queue
-            queue = append(queue, queue[0])
-            queue = queue[1:]
-            attempts++
-        }
-    }
-    
-    return len(queue)
-}
-```
-
 ---
 
 ## Linked Lists
@@ -814,23 +772,6 @@ func reverseList(head *ListNode) *ListNode {
     head.Next = nil
 
     return newHead
-}
-```
-
-**Alternative Implementation** (iterative approach):
-```go
-func reverseList(head *ListNode) *ListNode {
-    var prev *ListNode = nil
-    curr := head
-    
-    for curr != nil {
-        next := curr.Next
-        curr.Next = prev
-        prev = curr
-        curr = next
-    }
-    
-    return prev
 }
 ```
 
@@ -1082,27 +1023,6 @@ func InsertionSort(arr []int) []int {
 }
 ```
 
-**With Snapshots** (for visualization):
-```go
-func insertionSort(pairs []Pair) [][]Pair {
-    result := make([][]Pair, 0, len(pairs))
-    arr := make([]Pair, len(pairs))
-    copy(arr, pairs)
-
-    for i := 0; i < len(arr); i++ {
-        j := i
-        for j > 0 && arr[j-1].Key > arr[j].Key {
-            arr[j], arr[j-1] = arr[j-1], arr[j]
-            j--
-        }
-        snapshot := make([]Pair, len(arr))
-        copy(snapshot, arr)
-        result = append(result, snapshot)
-    }
-    return result
-}
-```
-
 ### Merge Sort
 
 ![Merge Sort](https://blog.boot.dev/img/800/merge_sort_gif.gif)
@@ -1111,44 +1031,26 @@ func insertionSort(pairs []Pair) [][]Pair {
 
 **Algorithm Approach**: Divide and conquer
 - **Divide**: Split array into two halves recursively
-- **Conquer**: Sort each half recursively
-- **Combine**: Merge sorted halves into final sorted array
 
-**Time Complexity**: 
-- **All cases**: O(n log n) - Consistent performance
-- **Splitting**: O(log n) levels of recursion
-- **Merging**: O(n) work per level
+![Merge Sort](https://blog.boot.dev/img/800/merge_sort_gif.gif)
 
-**Space Complexity**: O(n) - Requires temporary arrays for merging
+**Description**: Divide-and-conquer algorithm that recursively splits array, sorts halves, and merges them.
+
+**Time Complexity**: O(n log n) in all cases  
+**Space Complexity**: O(n)
 
 **Pros**:
-- Guaranteed O(n log n) performance (no worst case degradation)
-- Stable sort (preserves order of equal elements)
+- Guaranteed O(n log n) performance
+- Stable sort
 - Predictable performance
-- Good for linked lists (no random access needed)
-- Parallelizable (can sort halves independently)
+- Good for linked lists
 
 **Cons**:
 - Requires O(n) extra space
 - Not in-place
 - Slower than quicksort in practice for arrays
-- Overhead from recursion and copying
-
-**When to Use**:
-- When stable sort is required
-- Sorting linked lists
-- When consistent performance is critical
-- External sorting (data doesn't fit in memory)
-- When worst-case O(n log n) is required
-
-**When NOT to Use**:
-- Memory is constrained (use in-place sort)
-- Small datasets (insertion sort is faster)
-- When average-case performance matters more (quick sort is faster)
 
 **Usage**: When stable sort is required, sorting linked lists, or when consistent performance is critical.
-
-**Related Algorithms**: Quick Sort, Timsort (hybrid merge/insertion)
 
 ```go
 func mergeSort(items []int) []int {
@@ -1183,7 +1085,7 @@ func merge(a []int, b []int) []int {
 }
 ```
 
-**Merge K Sorted Lists** (application):
+**Merge K Sorted Lists** (using merge sort approach):
 ```go
 func mergeKLists(lists []*ListNode) *ListNode {
     nodes := make([]int, 0)
@@ -1214,48 +1116,23 @@ func mergeKLists(lists []*ListNode) *ListNode {
 
 ![Quick Sort](https://upload.wikimedia.org/wikipedia/commons/f/fe/Quicksort.gif)
 
-**Description**: A divide-and-conquer algorithm that selects a 'pivot' element and partitions the array so elements smaller than the pivot come before it and larger elements come after. Recursively sorts the partitions.
+**Description**: Divide-and-conquer algorithm using pivot partitioning for in-place sorting.
 
-**Algorithm Approach**: Divide and conquer with partitioning
-- **Choose pivot**: Select element (commonly last element)
-- **Partition**: Rearrange so smaller elements are left, larger right
-- **Recurse**: Sort left and right partitions
-
-**Time Complexity**: 
-- **Best case**: O(n log n) - Balanced partitions
-- **Average case**: O(n log n) - Random pivots
-- **Worst case**: O(n²) - Already sorted with poor pivot selection
-
-**Space Complexity**: O(log n) - Recursion stack for balanced tree
+**Time Complexity**: O(n log n) average, O(n²) worst case  
+**Space Complexity**: O(log n) for recursion stack
 
 **Pros**:
-- Fast average-case performance (faster than merge sort in practice)
-- In-place sorting (low memory usage)
-- Cache-friendly (good locality of reference)
-- Often fastest practical choice
-- Can be optimized (median-of-three pivot, etc.)
+- Fast average case performance
+- In-place sorting (low memory)
+- Cache-friendly
+- Often fastest in practice
 
 **Cons**:
-- Unstable sort (doesn't preserve order of equal elements)
-- Worst case O(n²) (mitigated with good pivot selection)
-- Not ideal for nearly sorted data (unless using good pivot strategy)
-- Recursive (stack overflow risk for large datasets)
-
-**When to Use**:
-- General-purpose sorting when stability not required
-- Average-case performance matters
-- In-place sorting needed
-- Large datasets that fit in memory
-
-**When NOT to Use**:
-- Stable sort required
-- Worst-case performance must be guaranteed
-- Stack space is limited
-- Data is already nearly sorted (without pivot optimization)
+- Unstable sort
+- Worst case O(n²) (rare with good pivot selection)
+- Not ideal for nearly sorted data
 
 **Usage**: General-purpose sorting when stability isn't required and average-case performance matters.
-
-**Related Algorithms**: Merge Sort, Intro Sort (hybrid quick/heap sort)
 
 ```go
 func partition(arr []int, low, high int) ([]int, int) {
@@ -1312,48 +1189,23 @@ func QuickSort(arr []int, start, end int) {
 
 ### Bucket Sort
 
-**Description**: Distributes elements into a fixed number of buckets based on their values, then sorts each bucket individually. Works best when values are uniformly distributed across a known range.
+**Description**: Distributes elements into buckets, then sorts each bucket (works for limited value ranges).
 
-**Algorithm Approach**: Distribution sort
-- **Create buckets**: Initialize buckets for value ranges
-- **Distribute**: Place each element in appropriate bucket
-- **Sort buckets**: Sort each bucket (often with insertion sort)
-- **Concatenate**: Combine sorted buckets
-
-**Time Complexity**: 
-- **Best/Average case**: O(n + k) - Uniform distribution, where k is number of buckets
-- **Worst case**: O(n²) - All elements in one bucket
-
-**Space Complexity**: O(n + k) - Space for buckets and elements
+**Time Complexity**: O(n) when values are uniformly distributed  
+**Space Complexity**: O(n)
 
 **Pros**:
-- Linear time for uniformly distributed data
+- Linear time for specific use cases
 - Simple implementation for limited ranges
-- Efficient for specific use cases
-- Can be faster than comparison sorts for right data
+- Efficient for uniformly distributed data
 
 **Cons**:
-- Only works for limited, known value ranges
+- Only works for limited value ranges
 - Not general-purpose
-- Unstable (in basic implementation)
-- Requires knowing value distribution
-- Extra space required
-
-**When to Use**:
-- Data with known, limited range (e.g., sorting grades 0-100)
-- Uniformly distributed values
-- Counting sort variant (e.g., sorting 0s, 1s, 2s)
-- Floating-point numbers in [0, 1) range
-
-**When NOT to Use**:
-- Unknown or unlimited value range
-- Non-uniform distribution
-- General-purpose sorting
-- Memory is constrained
+- Unstable
+- Requires knowing value range beforehand
 
 **Usage**: Sorting data with known, limited range (e.g., sorting 0s, 1s, and 2s).
-
-**Related Algorithms**: Counting Sort, Radix Sort
 
 ```go
 func bucketSort(arr []int) []int {
@@ -1376,3 +1228,736 @@ func bucketSort(arr []int) []int {
     return arr
 }
 ```
+
+---
+
+## Search Algorithms
+
+### Binary Search
+
+**Description**: Efficiently searches a sorted array by repeatedly dividing the search interval in half. At each step, it compares the target value with the middle element and eliminates half of the remaining elements based on the comparison. This divide-and-conquer approach makes it one of the most efficient search algorithms for sorted data.
+
+**Time Complexity**: 
+- **Best Case**: O(1) - Target is at the middle position
+- **Average/Worst Case**: O(log n) - Must divide search space repeatedly
+- **Where n** is the number of elements in the array
+
+**Space Complexity**: 
+- **Iterative**: O(1) - Only uses a few variables
+- **Recursive**: O(log n) - Due to call stack depth
+
+**Big O Notation Explained**:
+- **O(log n)**: Each comparison eliminates half the search space
+- **Example**: Array of 1,000,000 elements requires only ~20 comparisons (log₂ 1,000,000 ≈ 20)
+- **Logarithmic growth**: Doubling array size adds only one more comparison
+- **Why log n?**: Search space halves each iteration: n → n/2 → n/4 → ... → 1
+
+**When to Use Binary Search**:
+✅ **Best suited for:**
+- Searching in large sorted arrays (1000+ elements)
+- Finding insertion points in sorted data
+- Implementing autocomplete/search suggestions
+- Database index lookups
+- Finding boundaries (first/last occurrence of value)
+- Optimization problems with monotonic functions
+- When you need guaranteed O(log n) search time
+
+❌ **Not ideal for:**
+- Unsorted data (sorting first takes O(n log n), negating benefits)
+- Small arrays (<50 elements, linear search is simpler and often faster)
+- Linked lists (no random access, can't efficiently find middle)
+- Frequently changing data (maintaining sorted order is expensive)
+- When you need to find all occurrences (still O(n) in worst case)
+
+**Comparison with Alternatives**:
+- **vs Linear Search**: O(log n) vs O(n) - 1000x faster for million elements
+- **vs Hash Table**: Binary search maintains order, hash table doesn't; hash is O(1) average but no range queries
+- **vs BST Search**: Array binary search has better cache locality, BST allows O(log n) insertions
+- **vs Interpolation Search**: Binary search is O(log n) guaranteed, interpolation is O(log log n) average but O(n) worst case
+
+**Pros**:
+- Extremely fast for large sorted datasets
+- Simple iterative implementation
+- Minimal memory usage (O(1) space)
+- Predictable performance (always O(log n))
+- Cache-friendly (array-based, good locality)
+- No preprocessing needed (if already sorted)
+
+**Cons**:
+- Requires sorted array (O(n log n) to sort first)
+- Not suitable for unsorted or frequently changing data
+- Random access required (not efficient for linked lists)
+- Overkill for small datasets
+- Can't efficiently handle duplicates (finding all occurrences)
+- Integer overflow risk with (L + R) / 2 (use L + (R - L) / 2)
+
+**Usage**: Searching in sorted arrays, finding insertion points, optimization problems, implementing lower_bound/upper_bound, finding peak elements, rotated array searches.
+
+[GeeksforGeeks Reference](https://www.geeksforgeeks.org/dsa/binary-search/)
+
+```go
+func binarySearch(arr []int, target int) int {
+    L, R := 0, len(arr)-1
+    var mid int
+
+    for L <= R {
+        mid = (L + R) / 2
+        if target > arr[mid] {
+            L = mid + 1
+        } else if target < arr[mid] {
+            R = mid - 1
+        } else {
+            return mid
+        }
+    }
+    return -1
+}
+```
+
+### Koko Eating Bananas (Binary Search Application)
+
+**Description**: Uses binary search to find minimum eating speed to finish bananas in time.
+
+**Time Complexity**: O(n log m) where m is max pile size  
+**Space Complexity**: O(1)
+
+**Pros**:
+- Efficient optimization
+- Avoids brute force
+- Logarithmic search space reduction
+
+**Cons**:
+- Requires understanding of binary search on answer space
+
+**Usage**: Optimization problems where you can verify a solution but need to find the minimum/maximum.
+
+```go
+func minEatingSpeed(piles []int, h int) int {
+    canFinish := func(k int) bool {
+        hours := 0
+        for _, pile := range piles {
+            hours += (pile + k - 1) / k // ceiling division
+            if hours > h {
+                return false
+            }
+        }
+        return hours <= h
+    }
+
+    low, high := 1, 0
+    for _, pile := range piles {
+        if pile > high {
+            high = pile
+        }
+    }
+
+    // Binary search for minimum k
+    for low < high {
+        mid := low + (high-low)/2
+        if canFinish(mid) {
+            high = mid
+        } else {
+            low = mid + 1
+        }
+    }
+
+    return low
+}
+```
+
+**Brute Force Alternative** (for comparison):
+```go
+func minEatingSpeed(piles []int, h int) int {
+    speed := 1
+    for {
+        totalTime := 0
+        for _, pile := range piles {
+            totalTime += int(math.Ceil(float64(pile) / float64(speed)))
+        }
+
+        if totalTime <= h {
+            return speed
+        }
+        speed += 1
+    }
+}
+```
+
+---
+
+## Binary Search Trees
+
+### Tree Node Definition
+
+```go
+type TreeNode struct {
+    Val   int
+    Left  *TreeNode
+    Right *TreeNode
+}
+
+func NewTreeNode(val int) *TreeNode {
+    return &TreeNode{
+        Val:   val,
+        Left:  nil,
+        Right: nil,
+    }
+}
+```
+
+### BST Search
+
+**Description**: Searches for a value in a binary search tree by leveraging the BST property where left subtree contains smaller values and right subtree contains larger values. The algorithm recursively navigates left or right based on value comparison, eliminating half of the remaining nodes at each step.
+
+**Time Complexity**: 
+- **Best/Average Case**: O(log n) - For balanced trees, height is logarithmic
+- **Worst Case**: O(n) - For completely unbalanced trees (essentially a linked list)
+- **Where n** is the number of nodes in the tree
+
+**Space Complexity**: 
+- **Recursive**: O(h) where h is tree height - Due to call stack
+- **Iterative**: O(1) - No extra space needed
+
+**Big O Notation Explained**:
+- **O(log n)**: Each comparison eliminates half the search space (like binary search)
+- **O(n)**: In worst case (skewed tree), must traverse all nodes linearly
+- **Height matters**: Balanced tree height = log n, skewed tree height = n
+
+**When to Use BST Search**:
+✅ **Best suited for:**
+- Searching in sorted/ordered data that changes frequently (insertions/deletions)
+- When you need O(log n) average search time without array reallocation
+- Dictionary/map implementations where keys need ordering
+- Range queries (find all values between x and y)
+- Finding min/max values efficiently
+- Maintaining sorted data with dynamic updates
+
+❌ **Not ideal for:**
+- Static sorted data (use binary search on array instead - better cache locality)
+- Unbalanced trees (consider self-balancing trees like AVL or Red-Black)
+- Small datasets (overhead not worth it, use simple array)
+- When you don't need ordering (use hash table for O(1) average lookup)
+
+**Comparison with Alternatives**:
+- **vs Array Binary Search**: BST allows O(log n) insertion/deletion, array requires O(n)
+- **vs Hash Table**: BST maintains order and supports range queries, hash table doesn't
+- **vs Linear Search**: BST is O(log n) vs O(n), but requires maintaining tree structure
+- **vs Balanced BST (AVL/Red-Black)**: Standard BST can degrade to O(n), balanced trees guarantee O(log n)
+
+**Pros**:
+- Efficient O(log n) search for balanced trees
+- Simple recursive implementation
+- Leverages BST ordering property
+- No extra space needed for iterative version
+- Naturally supports range queries and ordered traversal
+
+**Cons**:
+- Performance degrades to O(n) for unbalanced trees
+- Recursion overhead and stack space usage
+- Requires maintaining BST property during insertions/deletions
+- Not cache-friendly compared to arrays
+- Slower than hash tables for exact-match lookups
+
+**Usage**: Finding elements in BST, validating BST structure, implementing ordered maps/sets, range queries, finding successor/predecessor nodes.
+
+```go
+type Search struct{}
+
+func (s *Search) Search(root *TreeNode, target int) bool {
+    if root == nil {
+        return false
+    }
+
+    if target > root.Val {
+        return s.Search(root.Right, target)
+    } else if target < root.Val {
+        return s.Search(root.Left, target)
+    } else {
+        return true
+    }
+}
+```
+
+**Alternative Implementation**:
+```go
+func searchBST(root *TreeNode, val int) *TreeNode {
+    if root == nil || root.Val == val {
+        return root
+    }
+    if val < root.Val {
+        return searchBST(root.Left, val)
+    }
+    return searchBST(root.Right, val)
+}
+```
+
+### Insert into BST
+
+**Description**: Inserts a new value into a binary search tree maintaining BST property.
+
+**Time Complexity**: O(log n) average, O(n) worst case  
+**Space Complexity**: O(log n) for recursion
+
+**Pros**:
+- Maintains BST property
+- Simple recursive logic
+- No rebalancing needed
+
+**Cons**:
+- Can create unbalanced tree
+- Performance degrades with unbalanced trees
+
+**Usage**: Building BSTs, maintaining sorted data structure.
+
+```go
+func insertIntoBST(root *TreeNode, val int) *TreeNode {
+    if root == nil {
+        return &TreeNode{Val: val}
+    }
+
+    if val < root.Val {
+        root.Left = insertIntoBST(root.Left, val)
+    } else {
+        root.Right = insertIntoBST(root.Right, val)
+    }
+    return root
+}
+```
+
+### Delete Node in BST
+
+**Description**: Removes a node from BST while maintaining BST property.
+
+**Time Complexity**: O(log n) average, O(n) worst case  
+**Space Complexity**: O(log n) for recursion
+
+**Pros**:
+- Maintains BST property
+- Handles all three deletion cases
+
+**Cons**:
+- Complex logic for node with two children
+- Can unbalance tree
+
+**Usage**: Removing elements from BST while preserving structure.
+
+```go
+func getMin(node *TreeNode) *TreeNode {
+    current := node
+    for current.Left != nil {
+        current = current.Left
+    }
+    return current
+}
+
+func deleteNode(root *TreeNode, key int) *TreeNode {
+    if root == nil {
+        return nil
+    }
+
+    if key < root.Val {
+        root.Left = deleteNode(root.Left, key)
+    } else if key > root.Val {
+        root.Right = deleteNode(root.Right, key)
+    } else {
+        if root.Left == nil {
+            return root.Right
+        } else if root.Right == nil {
+            return root.Left
+        }
+        minNode := getMin(root.Right)
+        root.Val = minNode.Val
+        root.Right = deleteNode(root.Right, root.Val)
+    }
+    return root
+}
+```
+
+---
+
+## Tree Traversal & Operations
+
+### Binary Tree Inorder Traversal
+
+**Description**: Traverses tree in left-root-right order (produces sorted sequence for BST).
+
+**Time Complexity**: O(n)  
+**Space Complexity**: O(n) for recursion stack
+
+**Pros**:
+- Produces sorted output for BST
+- Simple recursive implementation
+- Visits all nodes
+
+**Cons**:
+- Recursion overhead
+- Stack space usage
+
+**Usage**: Getting sorted values from BST, tree validation, expression evaluation.
+
+```go
+func traverse(node *TreeNode, result *[]int) {
+    if node != nil {
+        traverse(node.Left, result)
+        *result = append(*result, node.Val)
+        traverse(node.Right, result)
+    }
+}
+
+func inorderTraversal(root *TreeNode) []int {
+    result := []int{}
+    traverse(root, &result)
+    return result
+}
+```
+
+### Kth Smallest Element in BST
+
+**Description**: Finds the kth smallest element using inorder traversal.
+
+**Time Complexity**: O(k) to O(n)  
+**Space Complexity**: O(h) where h is tree height
+
+**Pros**:
+- Efficient early termination
+- Leverages BST inorder property
+- Iterative approach avoids recursion overhead
+
+**Cons**:
+- Requires stack for iterative approach
+
+**Usage**: Finding kth statistics in BST, range queries.
+
+```go
+func kthSmallest(root *TreeNode, k int) int {
+    stack := []*TreeNode{}
+    current := root
+
+    for current != nil || len(stack) > 0 {
+        for current != nil {
+            stack = append(stack, current)
+            current = current.Left
+        }
+
+        current = stack[len(stack)-1]
+        stack = stack[:len(stack)-1]
+
+        k--
+        if k == 0 {
+            return current.Val
+        }
+
+        current = current.Right
+    }
+    return -1
+}
+```
+
+### Construct Binary Tree from Preorder and Inorder
+
+**Description**: Reconstructs binary tree from preorder and inorder traversal arrays.
+
+**Time Complexity**: O(n²) due to linear search, O(n) with hashmap  
+**Space Complexity**: O(n)
+
+**Pros**:
+- Unique reconstruction possible
+- Demonstrates tree properties
+
+**Cons**:
+- Requires both traversals
+- Can be optimized with hashmap
+
+**Usage**: Tree serialization/deserialization, understanding tree traversals.
+
+```go
+func buildTree(preorder []int, inorder []int) *TreeNode {
+    if len(preorder) == 0 || len(inorder) == 0 {
+        return nil
+    }
+
+    rootVal := preorder[0]
+    root := &TreeNode{Val: rootVal}
+
+    var rootIndex int
+    for i, val := range inorder {
+        if val == rootVal {
+            rootIndex = i
+            break
+        }
+    }
+
+    root.Left = buildTree(preorder[1:rootIndex+1], inorder[:rootIndex])
+    root.Right = buildTree(preorder[rootIndex+1:], inorder[rootIndex+1:])
+    return root
+}
+```
+
+### Breadth-First Search (Level Order Traversal)
+
+**Description**: Traverses tree level by level using a queue.
+
+**Time Complexity**: O(n)  
+**Space Complexity**: O(w) where w is maximum width of tree
+
+**Pros**:
+- Visits nodes level by level
+- Useful for finding shortest path
+- Iterative (no recursion overhead)
+
+**Cons**:
+- Requires queue data structure
+- More memory than DFS for wide trees
+
+**Usage**: Level-order processing, finding tree width, shortest path problems.
+
+```go
+func levelOrder(root *TreeNode) [][]int {
+    var result [][]int
+    if root == nil {
+        return result
+    }
+
+    queue := []*TreeNode{root}
+
+    for len(queue) > 0 {
+        var level []int
+        qLen := len(queue)
+
+        for i := 0; i < qLen; i++ {
+            node := queue[0]
+            queue = queue[1:]
+
+            level = append(level, node.Val)
+
+            if node.Left != nil {
+                queue = append(queue, node.Left)
+            }
+
+            if node.Right != nil {
+                queue = append(queue, node.Right)
+            }
+        }
+
+        result = append(result, level)
+    }
+
+    return result
+}
+```
+
+### Design Binary Search Tree (TreeMap)
+
+**Description**: Complete BST implementation with insert, get, min/max, remove, and traversal operations.
+
+**Time Complexity**: O(log n) average for balanced tree, O(n) worst case  
+**Space Complexity**: O(n)
+
+**Pros**:
+- Full-featured BST implementation
+- Supports all common operations
+- Maintains sorted order
+
+**Cons**:
+- No self-balancing
+- Can degrade to O(n) operations
+
+**Usage**: Implementing ordered maps, maintaining sorted data with efficient operations.
+
+```go
+type TreeNode struct {
+    Key   int
+    Value int
+    Left  *TreeNode
+    Right *TreeNode
+}
+
+type TreeMap struct {
+    Root *TreeNode
+}
+
+func NewTreeMap() *TreeMap {
+    return &TreeMap{}
+}
+
+func (t *TreeMap) Insert(key, val int) {
+    t.Root = t.insert(t.Root, key, val)
+}
+
+func (t *TreeMap) insert(node *TreeNode, key, val int) *TreeNode {
+    if node == nil {
+        return &TreeNode{Key: key, Value: val}
+    }
+    if key < node.Key {
+        node.Left = t.insert(node.Left, key, val)
+    } else if key > node.Key {
+        node.Right = t.insert(node.Right, key, val)
+    } else {
+        node.Value = val
+    }
+    return node
+}
+
+func (t *TreeMap) Get(key int) int {
+    node := t.get(t.Root, key)
+    if node == nil {
+        return -1
+    }
+    return node.Value
+}
+
+func (t *TreeMap) get(node *TreeNode, key int) *TreeNode {
+    if node == nil {
+        return nil
+    }
+    if key < node.Key {
+        return t.get(node.Left, key)
+    } else if key > node.Key {
+        return t.get(node.Right, key)
+    }
+    return node
+}
+
+func (t *TreeMap) GetMin() int {
+    node := t.getMin(t.Root)
+    if node == nil {
+        return -1
+    }
+    return node.Value
+}
+
+func (t *TreeMap) getMin(node *TreeNode) *TreeNode {
+    if node.Left == nil {
+        return node
+    }
+    return t.getMin(node.Left)
+}
+
+func (t *TreeMap) GetMax() int {
+    node := t.getMax(t.Root)
+    if node == nil {
+        return -1
+    }
+    return node.Value
+}
+
+func (t *TreeMap) getMax(node *TreeNode) *TreeNode {
+    if node.Right == nil {
+        return node
+    }
+    return t.getMax(node.Right)
+}
+
+func (t *TreeMap) Remove(key int) {
+    t.Root = t.remove(t.Root, key)
+}
+
+func (t *TreeMap) remove(node *TreeNode, key int) *TreeNode {
+    if node == nil {
+        return nil
+    }
+    if key < node.Key {
+        node.Left = t.remove(node.Left, key)
+    } else if key > node.Key {
+        node.Right = t.remove(node.Right, key)
+    } else {
+        if node.Left == nil {
+            return node.Right
+        }
+        if node.Right == nil {
+            return node.Left
+        }
+        temp := t.getMin(node.Right)
+        node.Key = temp.Key
+        node.Value = temp.Value
+        node.Right = t.remove(node.Right, temp.Key)
+    }
+    return node
+}
+
+func (t *TreeMap) GetInorderKeys() []int {
+    return t.getInorderKeys(t.Root)
+}
+
+func (t *TreeMap) getInorderKeys(node *TreeNode) []int {
+    if node == nil {
+        return []int{}
+    }
+    keys := t.getInorderKeys(node.Left)
+    keys = append(keys, node.Key)
+    keys = append(keys, t.getInorderKeys(node.Right)...)
+    return keys
+}
+```
+
+---
+
+## Dynamic Programming
+
+### Climbing Stairs (Fibonacci)
+
+**Description**: Calculates number of ways to climb n stairs (1 or 2 steps at a time).
+
+**Time Complexity**: O(n)  
+**Space Complexity**: O(1) for iterative, O(n) for recursive
+
+**Pros**:
+- Classic DP problem
+- Multiple solution approaches
+- Demonstrates optimization techniques
+
+**Cons**:
+- Recursive solution can be slow without memoization
+
+**Usage**: Understanding DP concepts, counting problems, Fibonacci-like sequences.
+
+**Iterative Solution** (Optimal):
+```go
+func climbStairs(n int) int {
+    if n <= 2 {
+        return n
+    }
+    first, second := 1, 2
+    for i := 3; i <= n; i++ {
+        first, second = second, first+second
+    }
+    return second
+}
+```
+
+**Recursive DFS Solution** (Educational):
+```go
+func climbStairs(n int) int {
+    var dfs func(i int) int
+    dfs = func(i int) int {
+        if i >= n {
+            if i == n {
+                return 1
+            }
+            return 0
+        }
+        return dfs(i+1) + dfs(i+2)
+    }
+    return dfs(0)
+}
+```
+
+**Comparison**:
+- **Iterative**: O(n) time, O(1) space - Best for production
+- **Recursive**: O(2^n) time without memoization - Good for understanding recursion
+- **With Memoization**: O(n) time, O(n) space - Balance between clarity and efficiency
+
+---
+
+## Contributing
+
+Feel free to add more algorithms and data structures! When contributing:
+
+1. Include clear description
+2. Add time/space complexity analysis
+3. List pros and cons
+4. Provide usage scenarios
+5. Include well-commented code
+6. Add visual aids where helpful
+
+## Resources
