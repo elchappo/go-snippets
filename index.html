@@ -244,6 +244,18 @@
             const algo = filteredAlgorithms[currentIndex];
             const isKnown = knownCards.has(algo.title);
 
+            // Get category label
+            const categoryLabels = {
+                'array': 'Array & String Algorithms',
+                'stack': 'Stack & Queue',
+                'linked': 'Linked Lists',
+                'sorting': 'Sorting Algorithms',
+                'search': 'Search Algorithms',
+                'tree': 'Binary Search Trees / Tree Operations',
+                'dp': 'Dynamic Programming'
+            };
+            const categoryLabel = categoryLabels[algo.category] || 'General';
+
             // Build algorithm approach section
             let approachHTML = '';
             if (algo.approach && algo.approach.length > 0) {
@@ -362,6 +374,7 @@
 
             wrapper.innerHTML = `
                 <div class="card">
+                    <div class="card-category">${categoryLabel}</div>
                     <div class="card-title">${algo.title}</div>
                     <div class="card-description">${algo.description}</div>
                     ${approachHTML}
