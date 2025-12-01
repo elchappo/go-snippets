@@ -85,17 +85,29 @@
 
                 // Extract algorithm approach
                 let approach = [];
-                const approachMatch = section.match(/\*\*Algorithm Approach\*\*:\s*(.+?)(?:\n- \*\*(.+?)\*\*:\s*(.+?))+/s);
-                if (approachMatch) {
-                    const approachSection = section.match(/\*\*Algorithm Approach\*\*:(.+?)(?=\n\n\*\*)/s);
-                    if (approachSection) {
-                        const items = approachSection[1].match(/- \*\*(.+?)\*\*:\s*(.+?)(?=\n-|\n\n|$)/gs);
+                const approachSection = section.match(/\*\*Algorithm Approach\*\*:(.+?)(?=\n\*\*Time Complexity\*\*)/s);
+                if (approachSection) {
+                    const approachText = approachSection[1].trim();
+                    // Check if it's a simple description or bullet points
+                    if (approachText.includes('- **')) {
+                        // Structured approach with labeled items
+                        const items = approachText.match(/- \*\*(.+?)\*\*:\s*(.+?)(?=\n-|\n\*\*|$)/gs);
                         if (items) {
                             approach = items.map(item => {
                                 const match = item.match(/- \*\*(.+?)\*\*:\s*(.+)/s);
                                 return match ? { label: match[1].trim(), text: match[2].trim() } : null;
                             }).filter(Boolean);
                         }
+                    } else if (approachText.includes('\n- ')) {
+                        // Simple bullet list
+                        const lines = approachText.split('\n').filter(l => l.trim().startsWith('-'));
+                        approach = lines.map(line => {
+                            const text = line.replace(/^-\s*/, '').trim();
+                            return { label: '', text: text };
+                        });
+                    } else {
+                        // Single line description
+                        approach = [{ label: '', text: approachText }];
                     }
                 }
 
@@ -261,9 +273,15 @@
             if (algo.approach && algo.approach.length > 0) {
                 approachHTML = `
                     <div class="approach-section">
-                        <h4>Algorithm Approach</h4>
+                        <h4>🎯 Algorithm Approach</h4>
                         <ul class="approach-list">
-                            ${algo.approach.map(item => `<li><strong>${item.label}:</strong> ${item.text}</li>`).join('')}
+                            ${algo.approach.map(item => {
+                    if (item.label) {
+                        return `<li><strong>${item.label}:</strong> ${item.text}</li>`;
+                    } else {
+                        return `<li>${item.text}</li>`;
+                    }
+                }).join('')}
                         </ul>
                     </div>
                 `;
