@@ -85,28 +85,33 @@
 
                 // Extract algorithm approach
                 let approach = [];
-                const approachSection = section.match(/\*\*Algorithm Approach\*\*:(.+?)(?=\n\*\*Time Complexity\*\*)/s);
-                if (approachSection) {
-                    const approachText = approachSection[1].trim();
-                    // Check if it's a simple description or bullet points
-                    if (approachText.includes('- **')) {
-                        // Structured approach with labeled items
-                        const items = approachText.match(/- \*\*(.+?)\*\*:\s*(.+?)(?=\n-|\n\*\*|$)/gs);
+                const approachMatch = section.match(/\*\*Algorithm Approach\*\*:\s*(.+?)(?=\n\*\*Time Complexity\*\*)/s);
+                if (approachMatch) {
+                    const approachText = approachMatch[1].trim();
+
+                    // Check if it has labeled bullet points like "- **Label**: text"
+                    if (approachText.match(/- \*\*[^*]+\*\*:/)) {
+                        const items = approachText.match(/- \*\*([^*]+)\*\*:\s*([^\n]+)/g);
                         if (items) {
                             approach = items.map(item => {
-                                const match = item.match(/- \*\*(.+?)\*\*:\s*(.+)/s);
-                                return match ? { label: match[1].trim(), text: match[2].trim() } : null;
+                                const match = item.match(/- \*\*([^*]+)\*\*:\s*(.+)/);
+                                if (match) {
+                                    return { label: match[1].trim(), text: match[2].trim() };
+                                }
+                                return null;
                             }).filter(Boolean);
                         }
-                    } else if (approachText.includes('\n- ')) {
-                        // Simple bullet list
+                    }
+                    // Check for simple bullet points without labels
+                    else if (approachText.includes('\n- ')) {
                         const lines = approachText.split('\n').filter(l => l.trim().startsWith('-'));
                         approach = lines.map(line => {
                             const text = line.replace(/^-\s*/, '').trim();
                             return { label: '', text: text };
                         });
-                    } else {
-                        // Single line description
+                    }
+                    // Single line or paragraph description
+                    else {
                         approach = [{ label: '', text: approachText }];
                     }
                 }
@@ -466,6 +471,40 @@
             updateCardSelector();
         }
 
+        function getShortName(title) {
+            // Create short names from algorithm titles
+            const shortNames = {
+                'Remove Duplicates From Sorted Array': 'RemoveDup',
+                'Remove Element': 'RemoveEl',
+                'Concatenation of Array': 'Concat',
+                'Valid Parentheses': 'ValidParen',
+                'Min Stack': 'MinStack',
+                'Implement Stack Using Queues': 'Stack→Q',
+                'Design Browser History': 'Browser',
+                'Number of Students Unable to Eat Lunch': 'Students',
+                'Reverse Linked List': 'Reverse',
+                'Merge Two Sorted Linked Lists': 'MergeLists',
+                'Design Linked List': 'DesignLL',
+                'Insertion Sort': 'Insertion',
+                'Merge Sort': 'Merge',
+                'Quick Sort': 'Quick',
+                'Bucket Sort': 'Bucket',
+                'Binary Search': 'BinSearch',
+                'Koko Eating Bananas (Binary Search Application)': 'Koko',
+                'BST Search': 'Search',
+                'Insert into BST': 'Insert',
+                'Delete Node in BST': 'Delete',
+                'Binary Tree Inorder Traversal': 'Inorder',
+                'Kth Smallest Element in BST': 'Kth',
+                'Construct Binary Tree from Preorder and Inorder': 'Construct',
+                'Breadth-First Search (Level Order Traversal)': 'BFS',
+                'Design Binary Search Tree (TreeMap)': 'TreeMap',
+                'Climbing Stairs (Fibonacci)': 'Stairs'
+            };
+
+            return shortNames[title] || title.split(' ').slice(0, 2).join('');
+        }
+
         function renderCardSelector() {
             const selector = document.getElementById('card-selector');
             const grid = document.getElementById('card-selector-grid');
@@ -483,7 +522,8 @@
                 if (isActive) classes.push('active');
                 if (isKnown) classes.push('known');
 
-                return `<button class="${classes.join(' ')}" onclick="jumpToCard(${index})" title="${algo.title}">${index + 1}</button>`;
+                const shortName = getShortName(algo.title);
+                return `<button class="${classes.join(' ')}" onclick="jumpToCard(${index})" title="${algo.title}">${shortName}</button>`;
             }).join('');
         }
 

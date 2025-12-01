@@ -559,20 +559,23 @@ header p {
 
 .card-selector-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 8px;
 }
 
 .card-number-btn {
-    padding: 8px;
+    padding: 8px 4px;
     background: white;
     border: 2px solid transparent;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.85em;
+    font-size: 0.75em;
     transition: all 0.3s;
     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card-number-btn:hover {
